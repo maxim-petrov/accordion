@@ -90,73 +90,75 @@ const Component = ({
   };
 
   return (
-    <div className="_Gq5_ ql7Up" data-e2e-id="accordion-base">
-      <div className="f_vB6">
-        <div 
-          className="acr-root-bdf-12-2-0 acr-divider-502-12-2-0" 
-          data-e2e-id="accordion-default" 
-          tabIndex="0"
-          role="presentation"
-        >
+    <div style={{ padding: '40px', backgroundColor: '#f0f5f8', borderRadius: '20px' }}>
+      <div className="_Gq5_ ql7Up" data-e2e-id="accordion-base">
+        <div className="f_vB6">
           <div 
-            onClick={toggleAccordion}
-            data-e2e-id="accordion-default--toggle-button" 
-            className="acr-wrapTop-79f-12-2-0" 
-            tabIndex="-1"
-            style={{ cursor: 'pointer' }}
+            className="acr-root-bdf-12-2-0 acr-divider-502-12-2-0" 
+            data-e2e-id="accordion-default" 
+            tabIndex="0"
+            role="presentation"
           >
-            <div className="acr-defaultTitle-147-12-2-0">
-              <div className="acr-wrapTitles-556-12-2-0">
-                <div className="acr-header-e6e-12-2-0">
-                  <div>
-                    <div className="acr-wrapTitle-d35-12-2-0">
-                      <h2 className="tg-heading-small-dc0-7-0-3">
-                        <div className="acr-title-c71-12-2-0">{title}</div>
-                      </h2>
+            <div 
+              onClick={toggleAccordion}
+              data-e2e-id="accordion-default--toggle-button" 
+              className="acr-wrapTop-79f-12-2-0" 
+              tabIndex="-1"
+              style={{ cursor: 'pointer' }}
+            >
+              <div className="acr-defaultTitle-147-12-2-0">
+                <div className="acr-wrapTitles-556-12-2-0">
+                  <div className="acr-header-e6e-12-2-0">
+                    <div>
+                      <div className="acr-wrapTitle-d35-12-2-0">
+                        <h2 className="tg-heading-small-dc0-7-0-3">
+                          <div className="acr-title-c71-12-2-0">{title}</div>
+                        </h2>
+                      </div>
+                      <h5 className="acr-subtitle-d8b-12-2-0">{subtitle}</h5>
                     </div>
-                    <h5 className="acr-subtitle-d8b-12-2-0">{subtitle}</h5>
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="acr-arrow-60f-12-2-0">
-              <div className="icon-root-864-6-0-3 acr-icon-ea7-12-2-0">
-                <motion.svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  width="16" 
-                  height="16" 
-                  fill="none"
-                  animate={{ rotate: isOpen ? 180 : 0 }}
-                  transition={customTokens ? getCustomArrowAnimation().transition : arrowAnimation.transition}
-                  style={{ transformOrigin: 'center' }}
-                >
-                  <path 
-                    fill="currentColor" 
-                    fillRule="evenodd"
-                    d="M7.41 11.09a.833.833 0 0 0 1.18 0l5-5a.833.833 0 0 0-1.18-1.18L8 9.322l-4.41-4.41A.833.833 0 0 0 2.41 6.09l5 5Z"
-                    clipRule="evenodd"
-                  />
-                </motion.svg>
+              <div className="acr-arrow-60f-12-2-0">
+                <div className="icon-root-864-6-0-3 acr-icon-ea7-12-2-0">
+                  <motion.svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    width="16" 
+                    height="16" 
+                    fill="none"
+                    animate={{ rotate: isOpen ? 180 : 0 }}
+                    transition={customTokens ? getCustomArrowAnimation().transition : arrowAnimation.transition}
+                    style={{ transformOrigin: 'center' }}
+                  >
+                    <path 
+                      fill="currentColor" 
+                      fillRule="evenodd"
+                      d="M7.41 11.09a.833.833 0 0 0 1.18 0l5-5a.833.833 0 0 0-1.18-1.18L8 9.322l-4.41-4.41A.833.833 0 0 0 2.41 6.09l5 5Z"
+                      clipRule="evenodd"
+                    />
+                  </motion.svg>
+                </div>
               </div>
             </div>
+            <AnimatePresence initial={false}>
+              {isOpen && (
+                <motion.div 
+                  className="acr-content-c3a-12-2-0"
+                  initial={contentAnimation.initial}
+                  animate={contentAnimation.animate}
+                  exit={contentAnimation.exit}
+                  transition={customTokens ? getCustomContentAnimation().transition : contentAnimation.transition}
+                  style={contentAnimation.style}
+                >
+                  <div 
+                    className="tg-body-standard-regular-bdb-7-0-3"
+                    style={{ padding: "0 24px 24px" }}
+                  >{content}</div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-          <AnimatePresence initial={false}>
-            {isOpen && (
-              <motion.div 
-                className="acr-content-c3a-12-2-0"
-                initial={contentAnimation.initial}
-                animate={contentAnimation.animate}
-                exit={contentAnimation.exit}
-                transition={customTokens ? getCustomContentAnimation().transition : contentAnimation.transition}
-                style={contentAnimation.style}
-              >
-                <div 
-                  className="tg-body-standard-regular-bdb-7-0-3"
-                  style={{ padding: "0 24px 24px" }}
-                >{content}</div>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
       </div>
     </div>
