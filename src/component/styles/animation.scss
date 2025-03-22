@@ -1,37 +1,36 @@
 @use '../tokens/utils/tokenUtils' as *;
 
-.slider-axis-923-11-0-8:before {
-  transition: background-color $AXIS_TRANSITION_DURATION $AXIS_TRANSITION_EASING;
+.acr-wrapTop-79f-12-2-0 {
+  transition: color $ACCORDION_TRANSITION_DURATION $ACCORDION_TRANSITION_EASING;
 }
 
-.slider-axisFill-f1d-11-0-8 {
-  transition: $AXIS_FILL_TRANSITION_DURATION;
+.acr-arrow-60f-12-2-0 {
+  transition: background-color $ACCORDION_ARROW_ROTATION_DURATION $ACCORDION_ARROW_ROTATION_EASING;
 }
 
-.slider-counter-a01-11-0-8 {
-  transition: right $COUNTER_TRANSITION_DURATION;
+.acr-icon-ea7-12-2-0 {
+  transition: transform $ACCORDION_ARROW_ROTATION_DURATION $ACCORDION_ARROW_ROTATION_EASING;
 }
 
-.slider-thumb-2b5-11-0-8 .slider-thumbInner-c38-11-0-8 {
-  transition: box-shadow $THUMB_TRANSITION_DURATION $THUMB_TRANSITION_EASING;
+.acr-iconActive-d9e-12-2-0 {
+  transform: rotate(180deg);
 }
 
-.slider-thumb-2b5-11-0-8 .slider-thumbInner-c38-11-0-8 .slider-thumbInnerDot {
+.acr-content-c3a-12-2-0 {
   transition: 
-    height $THUMB_DOT_EXPAND_DURATION $THUMB_DOT_TRANSITION_EASING,
-    width $THUMB_DOT_EXPAND_DURATION $THUMB_DOT_TRANSITION_EASING;
+    max-height $ACCORDION_CONTENT_TRANSITION_DURATION $ACCORDION_CONTENT_TRANSITION_EASING,
+    opacity $ACCORDION_CONTENT_OPACITY_DURATION $ACCORDION_CONTENT_OPACITY_EASING;
 }
 
-.slider-thumb-2b5-11-0-8.slider-dragging .slider-thumbInner-c38-11-0-8 {
-  transition-duration: $THUMB_DRAG_DURATION;
-  transition-timing-function: $THUMB_DRAG_EASING;
+@keyframes acr-fadeInUp-eb1-12-2-0 {
+  0% {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-.slider-dragging .slider-thumb-2b5-11-0-8 .slider-thumbInner-c38-11-0-8 {
-  transition-duration: $THUMB_DRAG_DURATION;
-  transition-timing-function: $THUMB_DRAG_EASING;
-}
-
-.slider-root-80f-11-0-8.slider-active-c30-11-0-8 .slider-axisFill-f1d-11-0-8 {
-  transition: $AXIS_FILL_ACTIVE_DURATION;
+.acr-contentOpen-84d-12-2-0 {
+  animation: acr-fadeInUp-eb1-12-2-0 $ACCORDION_ANIMATION_DURATION $ACCORDION_TRANSITION_EASING forwards;
 } 

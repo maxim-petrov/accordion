@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import tokens from '../tokens/utils/tokenUtils.js';
 import { extractMs } from './utils.js';
 
-export const useSliderAnimation = (customDuration = null, customTransitionDuration = null) => {
+export const useAccordionAnimation = (customDuration = null, customTransitionDuration = null) => {
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
@@ -14,8 +14,8 @@ export const useSliderAnimation = (customDuration = null, customTransitionDurati
       } else if (customDuration) {
         animationDuration = extractMs(customDuration);
       } else {
-        animationDuration = extractMs(tokens.SLIDER_TRANSITION_DURATION) ||
-                          parseInt(tokens.SLIDER_ANIMATION_DURATION);
+        animationDuration = extractMs(tokens.ACCORDION_TRANSITION_DURATION) ||
+                          parseInt(tokens.ACCORDION_ANIMATION_DURATION);
       }
 
       const durationWithBuffer = animationDuration + 100;
@@ -35,26 +35,48 @@ export const useSliderAnimation = (customDuration = null, customTransitionDurati
   return [isAnimating, startAnimation, stopAnimation];
 };
 
+export const getAccordionTransitionConfig = (tokens) => ({
+  type: "tween",
+  duration: extractMs(tokens.ACCORDION_TRANSITION_DURATION) / 1000,
+  ease: tokens.ACCORDION_TRANSITION_EASING
+});
 
-export const getSliderTransitionStyle = (isDragging, isAnimating) => {
-  if (isDragging && !isAnimating) {
-    return 'none';
+export const getArrowAnimationConfig = (tokens) => ({
+  transition: {
+    duration: extractMs(tokens.ACCORDION_ARROW_ROTATION_DURATION) / 1000,
+    ease: tokens.ACCORDION_ARROW_ROTATION_EASING,
+    type: "spring",
+    stiffness: tokens.ACCORDION_ARROW_STIFFNESS,
+    damping: tokens.ACCORDION_ARROW_DAMPING,
+    mass: tokens.ACCORDION_ARROW_MASS
   }
-  return isAnimating
-    ? `left ${tokens.SLIDER_TRANSITION_DURATION} ${tokens.SLIDER_TRANSITION_EASING}, right ${tokens.SLIDER_TRANSITION_DURATION} ${tokens.SLIDER_TRANSITION_EASING}`
-    : 'none';
-};
+});
 
+export const getContentAnimationConfig = (tokens) => ({
+  initial: { height: 0, opacity: 0 },
+  animate: { height: "auto", opacity: 1 },
+  exit: { height: 0, opacity: 0 },
+  transition: {
+    height: {
+      duration: extractMs(tokens.ACCORDION_CONTENT_TRANSITION_DURATION) / 1000,
+      ease: tokens.ACCORDION_CONTENT_TRANSITION_EASING,
+      type: "spring",
+      stiffness: tokens.ACCORDION_ARROW_STIFFNESS,
+      damping: tokens.ACCORDION_ARROW_DAMPING,
+      mass: tokens.ACCORDION_ARROW_MASS
+    },
+    opacity: {
+      duration: extractMs(tokens.ACCORDION_CONTENT_OPACITY_DURATION) / 1000,
+      ease: tokens.ACCORDION_CONTENT_OPACITY_EASING
+    }
+  },
+  style: { overflow: "hidden" }
+});
 
-export const getInputDraggingStyle = (isDragging) => {
-  if (isDragging) {
-    return { pointerEvents: 'none' };
-  }
-  return {};
-};
+// For creating static exports, get tokens at module load time
+const staticTokens = tokens;
 
-export const SLIDER_ANIMATION = {
-  DURATION_MS: parseInt(tokens.SLIDER_ANIMATION_DURATION),
-  TRANSITION_DURATION: tokens.SLIDER_TRANSITION_DURATION,
-  EASING: tokens.SLIDER_TRANSITION_EASING,
-};
+// Export pre-configured animations with current CSS variable values
+export const accordionAnimationConfig = getAccordionTransitionConfig(staticTokens);
+export const arrowAnimation = getArrowAnimationConfig(staticTokens);
+export const contentAnimation = getContentAnimationConfig(staticTokens);
