@@ -59,11 +59,8 @@ export const getContentAnimationConfig = (tokens) => ({
   transition: {
     height: {
       duration: extractMs(tokens.ACCORDION_CONTENT_TRANSITION_DURATION) / 1000,
-      ease: tokens.ACCORDION_CONTENT_TRANSITION_EASING,
-      type: "spring",
-      stiffness: tokens.ACCORDION_ARROW_STIFFNESS,
-      damping: tokens.ACCORDION_ARROW_DAMPING,
-      mass: tokens.ACCORDION_ARROW_MASS
+      ease: "easeInOut",
+      type: "tween"
     },
     opacity: {
       duration: extractMs(tokens.ACCORDION_CONTENT_OPACITY_DURATION) / 1000,

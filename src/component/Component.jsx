@@ -71,11 +71,8 @@ const Component = ({
       transition: {
         height: {
           duration: parseFloat(animTokens.duration) / 1000 || 0.25,
-          ease: animTokens.motion,
-          type: "spring",
-          stiffness: animTokens.stiffness,
-          damping: animTokens.damping,
-          mass: animTokens.mass
+          ease: "easeInOut",
+          type: "tween"
         },
         opacity: {
           duration: parseFloat(tokens.ACCORDION_CONTENT_OPACITY_DURATION) / 1000 || 0.15,
@@ -155,9 +152,11 @@ const Component = ({
                 </div>
               </div>
             </div>
-            <AnimatePresence initial={false}>
+            <AnimatePresence mode="wait" initial={false}>
               {isOpen && (
                 <motion.div 
+                  key="content"
+                  layout="position"
                   className="acr-content-c3a-12-2-0"
                   initial={contentAnimation.initial}
                   animate={contentAnimation.animate}
