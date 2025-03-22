@@ -6,6 +6,7 @@ import {
   arrowAnimation,
   contentAnimation,
 } from './scripts/animation.js';
+import { extractMs } from './scripts/utils.js';
 import '../index.css';
 import './styles/component.scss';
 import './styles/animation.scss';
@@ -23,6 +24,7 @@ const Component = ({
     customTokens?.ACCORDION_ANIMATION_DURATION || null,
     customTokens?.ACCORDION_TRANSITION_DURATION || tokens.ACCORDION_TRANSITION_DURATION
   );
+  const [isToggleDisabled, setIsToggleDisabled] = useState(false);
 
   const getAnimationTokens = () => {
     if (customTokens) {
@@ -85,8 +87,20 @@ const Component = ({
   };
 
   const toggleAccordion = () => {
+    if (isToggleDisabled) return;
+    
+    setIsToggleDisabled(true);
     setIsOpen(!isOpen);
     startAnimation();
+    
+    const animDuration = extractMs(customTokens?.ACCORDION_TRANSITION_DURATION || 
+                                  tokens.ACCORDION_TRANSITION_DURATION);
+    
+    const disableTime = animDuration + 100;
+    
+    setTimeout(() => {
+      setIsToggleDisabled(false);
+    }, disableTime);
   };
 
   return (
