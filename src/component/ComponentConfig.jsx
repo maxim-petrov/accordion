@@ -1,10 +1,19 @@
 import { useState, useEffect } from 'react';
 import rootTokens from '../tokens.json';
 import { useTokens } from './context/TokenContext';
+import { resetAliases } from './tokens/utils/tokenAliases';
 
 function TokenConfig() {
-  const { tokenValues: initialTokenValues, handleTokenChange: onTokenChange } = useTokens();
+  const { 
+    tokenValues: initialTokenValues, 
+    handleTokenChange: onTokenChange,
+    tokenAliases,
+    handleAliasChange,
+    getAlias
+  } = useTokens();
   const [tokenValues, setTokenValues] = useState(initialTokenValues);
+  const [isEditingAlias, setIsEditingAlias] = useState({});
+  const [aliasEdits, setAliasEdits] = useState({});
 
   useEffect(() => {
     onTokenChange(tokenValues);
@@ -28,22 +37,84 @@ function TokenConfig() {
     }));
   };
 
+  const startEditingAlias = (tokenName) => {
+    setIsEditingAlias(prev => ({
+      ...prev,
+      [tokenName]: true
+    }));
+    setAliasEdits(prev => ({
+      ...prev,
+      [tokenName]: getAlias(tokenName)
+    }));
+  };
+
+  const stopEditingAlias = (tokenName) => {
+    setIsEditingAlias(prev => ({
+      ...prev,
+      [tokenName]: false
+    }));
+    
+    // Save the alias if it was changed
+    if (aliasEdits[tokenName] && aliasEdits[tokenName] !== getAlias(tokenName)) {
+      handleAliasChange(tokenName, aliasEdits[tokenName]);
+    }
+  };
+
+  const handleAliasEdit = (tokenName) => (e) => {
+    setAliasEdits(prev => ({
+      ...prev,
+      [tokenName]: e.target.value
+    }));
+  };
+
+  const handleResetAliases = () => {
+    if (window.confirm("Are you sure you want to reset all aliases to their default values?")) {
+      resetAliases();
+      window.location.reload(); // Reload to update the UI with reset aliases
+    }
+  };
+
   const allTokens = Object.entries(tokenValues);
 
   return (
     <div className="tokens-configurator">
-      <h3>Настройки</h3>
+      <div className="tokens-header">
+        <h3>Настройки</h3>
+        <button 
+          className="reset-aliases-button" 
+          onClick={handleResetAliases}
+          title="Reset all aliases to default values"
+        >
+          Reset Aliases
+        </button>
+      </div>
       
       <div className="tokens-section">        
         <div className="tokens-flat-list">
           {allTokens.map(([tokenName, tokenValue]) => {
             const isEasing = tokenName.includes('EASING') || tokenName.includes('MOTION');
             const isDuration = tokenName.includes('DURATION');
+            const displayName = getAlias(tokenName);
             
             return (
               <div className="token-group" key={tokenName}>
                 <div className="token-description">
-                  <label htmlFor={`token-${tokenName}`}>{tokenName}</label>
+                  <label htmlFor={`token-${tokenName}`}>
+                    {isEditingAlias[tokenName] ? (
+                      <input
+                        type="text"
+                        value={aliasEdits[tokenName] || displayName}
+                        onChange={handleAliasEdit(tokenName)}
+                        onBlur={() => stopEditingAlias(tokenName)}
+                        onKeyDown={(e) => e.key === 'Enter' && stopEditingAlias(tokenName)}
+                        autoFocus
+                      />
+                    ) : (
+                      <span onClick={() => startEditingAlias(tokenName)}>
+                        {displayName}
+                      </span>
+                    )}
+                  </label>
                   <span className="token-technical-name">{tokenName}</span>
                 </div>
                 <div className="token-controls">

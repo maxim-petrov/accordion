@@ -1,5 +1,6 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import { initializeTokenValues } from '../utils/tokenInitializer';
+import { getTokenAlias, setTokenAlias, getAllAliases } from '../tokens/utils/tokenAliases';
 
 const TokenContext = createContext();
 
@@ -13,6 +14,7 @@ export function useTokens() {
 
 export function TokenProvider({ children }) {
   const [tokenValues, setTokenValues] = useState(initializeTokenValues);
+  const [tokenAliases, setTokenAliases] = useState(getAllAliases());
 
   useEffect(() => {
     Object.entries(tokenValues).forEach(([key, value]) => {
@@ -35,9 +37,21 @@ export function TokenProvider({ children }) {
     setTokenValues(newTokenValues);
   };
 
+  const handleAliasChange = (tokenName, aliasName) => {
+    setTokenAlias(tokenName, aliasName);
+    setTokenAliases({...tokenAliases, [tokenName]: aliasName});
+  };
+
+  const getAlias = (tokenName) => {
+    return getTokenAlias(tokenName);
+  };
+
   const value = {
     tokenValues,
-    handleTokenChange
+    tokenAliases,
+    handleTokenChange,
+    handleAliasChange,
+    getAlias
   };
 
   return (
