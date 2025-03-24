@@ -7,7 +7,7 @@ import { TokenProvider } from './component/context/TokenContext';
 function App() {
   return (
     <TokenProvider>
-      <div style={{ padding: '40px', backgroundColor: '#f0f5f8', borderRadius: '20px' }}>
+      <div className="component-container">
         <Component />
         <Component />
         <Component />

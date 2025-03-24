@@ -32,11 +32,9 @@ function TokenConfig() {
 
   return (
     <div className="tokens-configurator">
-      <h3>Настройка токенов анимации</h3>
+      <h3>Настройки</h3>
       
-      <div className="tokens-section">
-        <h4>Токены анимации</h4>
-        
+      <div className="tokens-section">        
         <div className="tokens-flat-list">
           {allTokens.map(([tokenName, tokenValue]) => {
             const isEasing = tokenName.includes('EASING') || tokenName.includes('MOTION');

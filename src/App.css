@@ -1,8 +1,12 @@
 #root {
-  max-width: 1280px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  column-gap: 8px;
 }
 
 .card {
@@ -47,17 +51,16 @@
 
 .tokens-configurator {
   padding: 20px;
-  margin-top: 30px;
-  background-color: #f5f5f5;
+  background-color: rgba(240, 245, 248);
   border-radius: 8px;
-  max-width: 900px;
-  margin: 30px auto;
+  width: 300px;
 }
 
 .tokens-configurator h3 {
   margin-top: 0;
   color: #333;
-  font-size: 1.5rem;
+  font-size: 18px;
+  text-align: left;
   border-bottom: 1px solid #ddd;
   padding-bottom: 10px;
   margin-bottom: 20px;
@@ -117,10 +120,11 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 0.9rem;
+  min-height: 40px;
 }
 
 .token-group select {
-  width: 250px;
+  width: 100%;
   margin-right: 0.5rem;
 }
 
@@ -252,8 +256,9 @@
 
 .token-description {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 8px;
 }
 
@@ -275,6 +280,7 @@
 
 .token-controls {
   display: flex;
+  flex-direction: column;
   gap: 10px;
 }
 
@@ -285,6 +291,7 @@
   border-radius: 4px;
   background-color: #fff;
   font-size: 0.9rem;
+  min-height: 40px;
 }
 
 .component-group {
@@ -307,4 +314,11 @@
 .component-group-COUNTER, 
 .component-group-SLIDER {
   border-left: none;
+}
+
+.component-container {
+  width: 100%;
+  padding: 40px; 
+  background-color: #f0f5f8; 
+  border-radius: 20px;
 }
