@@ -43,9 +43,10 @@ export const getAccordionTransitionConfig = (tokens) => ({
 
 export const getArrowAnimationConfig = (tokens) => ({
   transition: {
-    duration: extractMs(tokens.ACCORDION_ARROW_ROTATION_DURATION) / 1000,
-    ease: "easeInOut",
-    type: "tween"
+    type: "spring",
+    stiffness: parseFloat(tokens.ACCORDION_ARROW_STIFFNESS),
+    damping: parseFloat(tokens.ACCORDION_ARROW_DAMPING),
+    mass: parseFloat(tokens.ACCORDION_ARROW_MASS)
   }
 });
 
@@ -55,9 +56,12 @@ export const getContentAnimationConfig = (tokens) => ({
   exit: { height: 0, opacity: 0 },
   transition: {
     height: {
-      duration: extractMs(tokens.ACCORDION_CONTENT_TRANSITION_DURATION) / 1000,
-      ease: "easeInOut",
-      type: "tween"
+      type: "spring",
+      stiffness: parseFloat(tokens.ACCORDION_ARROW_STIFFNESS),
+      damping: parseFloat(tokens.ACCORDION_ARROW_DAMPING),
+      mass: parseFloat(tokens.ACCORDION_ARROW_MASS),
+      // For closing animation, use regular tween
+      exit: { type: "tween", duration: extractMs(tokens.ACCORDION_CONTENT_TRANSITION_DURATION) / 1000, ease: "easeInOut" }
     },
     opacity: {
       duration: extractMs(tokens.ACCORDION_CONTENT_OPACITY_DURATION) / 1000,

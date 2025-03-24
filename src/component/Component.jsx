@@ -51,9 +51,10 @@ const Component = ({
     
     return {
       transition: {
-        duration: parseFloat(animTokens.duration) / 1000 || 0.15,
-        ease: "easeInOut",
-        type: "tween"
+        type: "spring",
+        stiffness: parseFloat(animTokens.stiffness),
+        damping: parseFloat(animTokens.damping),
+        mass: parseFloat(animTokens.mass)
       }
     };
   };
@@ -67,9 +68,16 @@ const Component = ({
       exit: { height: 0, opacity: 0 },
       transition: {
         height: {
-          duration: parseFloat(animTokens.duration) / 1000 || 0.25,
-          ease: "easeInOut",
-          type: "tween"
+          type: isOpen ? "spring" : "tween",
+          ...(isOpen && {
+            stiffness: parseFloat(animTokens.stiffness),
+            damping: parseFloat(animTokens.damping),
+            mass: parseFloat(animTokens.mass)
+          }),
+          ...(!isOpen && {
+            duration: parseFloat(animTokens.duration) / 1000 || 0.25,
+            ease: "easeInOut"
+          })
         },
         opacity: {
           duration: parseFloat(tokens.ACCORDION_CONTENT_OPACITY_DURATION) / 1000 || 0.15,
@@ -157,7 +165,18 @@ const Component = ({
                 initial={contentAnimation.initial}
                 animate={contentAnimation.animate}
                 exit={contentAnimation.exit}
-                transition={customTokens ? getCustomContentAnimation().transition : contentAnimation.transition}
+                transition={customTokens ? getCustomContentAnimation().transition : {
+                  height: {
+                    type: isOpen ? "spring" : "tween",
+                    ...(isOpen && {
+                      stiffness: parseFloat(tokens.ACCORDION_ARROW_STIFFNESS),
+                      damping: parseFloat(tokens.ACCORDION_ARROW_DAMPING),
+                      mass: parseFloat(tokens.ACCORDION_ARROW_MASS)
+                    }),
+                    ...(!isOpen && contentAnimation.transition.height)
+                  },
+                  opacity: contentAnimation.transition.opacity
+                }}
                 style={contentAnimation.style}
               >
                 <div 
