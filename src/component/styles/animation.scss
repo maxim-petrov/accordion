@@ -5,11 +5,11 @@
 }
 
 .acr-arrow-60f-12-2-0 {
-  transition: background-color $ACCORDION_ARROW_ROTATION_DURATION $ACCORDION_ARROW_ROTATION_EASING;
+  transition: background-color $ACCORDION_ARROW_ROTATION_DURATION ease-in-out;
 }
 
 .acr-icon-ea7-12-2-0 {
-  transition: transform $ACCORDION_ARROW_ROTATION_DURATION $ACCORDION_ARROW_ROTATION_EASING;
+  transition: transform $ACCORDION_ARROW_ROTATION_DURATION ease-in-out;
 }
 
 .acr-iconActive-d9e-12-2-0 {

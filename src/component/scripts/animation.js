@@ -44,11 +44,8 @@ export const getAccordionTransitionConfig = (tokens) => ({
 export const getArrowAnimationConfig = (tokens) => ({
   transition: {
     duration: extractMs(tokens.ACCORDION_ARROW_ROTATION_DURATION) / 1000,
-    ease: tokens.ACCORDION_ARROW_ROTATION_EASING,
-    type: "spring",
-    stiffness: tokens.ACCORDION_ARROW_STIFFNESS,
-    damping: tokens.ACCORDION_ARROW_DAMPING,
-    mass: tokens.ACCORDION_ARROW_MASS
+    ease: "easeInOut",
+    type: "tween"
   }
 });
 

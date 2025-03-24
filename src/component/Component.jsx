@@ -52,11 +52,8 @@ const Component = ({
     return {
       transition: {
         duration: parseFloat(animTokens.duration) / 1000 || 0.15,
-        ease: animTokens.motion,
-        type: "spring",
-        stiffness: animTokens.stiffness,
-        damping: animTokens.damping,
-        mass: animTokens.mass
+        ease: "easeInOut",
+        type: "tween"
       }
     };
   };
