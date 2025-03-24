@@ -14,6 +14,7 @@ function TokenConfig() {
   const [tokenValues, setTokenValues] = useState(initialTokenValues);
   const [isEditingAlias, setIsEditingAlias] = useState({});
   const [aliasEdits, setAliasEdits] = useState({});
+  const [customSelections, setCustomSelections] = useState({});
 
   useEffect(() => {
     onTokenChange(tokenValues);
@@ -31,6 +32,30 @@ function TokenConfig() {
 
   const handleTokenChange = (tokenName) => (e) => {
     let newValue = e.target.value;
+    
+    // Handle custom selection
+    if (newValue === 'custom') {
+      setCustomSelections(prev => ({
+        ...prev,
+        [tokenName]: true
+      }));
+      // Don't update the token value yet, wait for custom input
+      return;
+    } else {
+      setCustomSelections(prev => ({
+        ...prev,
+        [tokenName]: false
+      }));
+    }
+    
+    setTokenValues(prev => ({
+      ...prev,
+      [tokenName]: newValue
+    }));
+  };
+
+  const handleCustomInputChange = (tokenName) => (e) => {
+    const newValue = e.target.value;
     setTokenValues(prev => ({
       ...prev,
       [tokenName]: newValue
@@ -95,6 +120,7 @@ function TokenConfig() {
             const isEasing = tokenName.includes('EASING') || tokenName.includes('MOTION');
             const isDuration = tokenName.includes('DURATION');
             const displayName = getAlias(tokenName);
+            const isCustom = customSelections[tokenName];
             
             return (
               <div className="token-group" key={tokenName}>
@@ -120,7 +146,7 @@ function TokenConfig() {
                 <div className="token-controls">
                   <select 
                     id={`token-${tokenName}`}
-                    value={tokenValue}
+                    value={isCustom ? 'custom' : tokenValue}
                     onChange={handleTokenChange(tokenName)}
                   >
                     <optgroup label="Из tokens.json">
@@ -135,15 +161,18 @@ function TokenConfig() {
                         </option>
                       ))}
                     </optgroup>
+                    <option value="custom">Custom</option>
                   </select>
                   
-                  <input
-                    type="text"
-                    className="token-custom-value"
-                    value={tokenValue}
-                    onChange={handleTokenChange(tokenName)}
-                    placeholder="Введите значение"
-                  />
+                  {isCustom && (
+                    <input
+                      type="text"
+                      className="token-custom-value"
+                      value={tokenValue}
+                      onChange={handleCustomInputChange(tokenName)}
+                      placeholder="Введите значение"
+                    />
+                  )}
                 </div>
               </div>
             );

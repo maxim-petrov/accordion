@@ -126,11 +126,13 @@
 }
 
 .token-custom-value {
-  flex: 1;
+  width: 100%;
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 0.9rem;
+  margin-top: 5px;
+  transition: all 0.3s ease;
 }
 
 .token-preview {
@@ -279,16 +281,18 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin-bottom: 10px;
 }
 
 .token-controls select {
-  flex: 1.5;
+  flex: 1;
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
   background-color: #fff;
   font-size: 0.9rem;
   min-height: 40px;
+  width: 100%;
 }
 
 .component-group {
