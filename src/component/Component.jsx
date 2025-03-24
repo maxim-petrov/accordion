@@ -1,426 +1,179 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
-  useSliderAnimation,
-  getInputDraggingStyle,
+  useAccordionAnimation,
+  accordionAnimationConfig,
+  arrowAnimation,
+  contentAnimation,
 } from './scripts/animation.js';
+import { extractMs } from './scripts/utils.js';
 import '../index.css';
 import './styles/component.scss';
 import './styles/animation.scss';
 import tokens from './tokens/utils/tokenUtils';
 import { useTokens } from './context/TokenContext';
 
-
-
 const Component = ({
-  min = 0,
-  max = 100,
-  step = 1,
-  defaultValue = 0,
-  label = 'Значение',
-  steps = [0, 25, 50, 75, 100],
-  withInput = true,
-  active = false,
-  onChange,
+  title = 'Заголовок',
+  subtitle = 'Подзаголовок',
+  content = 'Оригинал документа, на основании которого продавец стал собственником квартиры. Например, договор купли-продажи, договор долевого участия, договор дарения и другие (находится у собственника)',
 }) => {
   const { tokenValues: customTokens } = useTokens();
-  const [value, setValue] = useState(defaultValue);
-  const [isDragging, setIsDragging] = useState(false);
-  const [isAnimating, startAnimation, stopAnimation] = useSliderAnimation(
-    customTokens?.SLIDER_ANIMATION_DURATION || null,
-    customTokens?.SLIDER_TRANSITION_DURATION || tokens.SLIDER_TRANSITION_DURATION
+  const [isOpen, setIsOpen] = useState(false);
+  const [isAnimating, startAnimation, stopAnimation] = useAccordionAnimation(
+    customTokens?.ACCORDION_ANIMATION_DURATION || null,
+    customTokens?.ACCORDION_TRANSITION_DURATION || tokens.ACCORDION_TRANSITION_DURATION
   );
-  const [isFocused, setIsFocused] = useState(false);
-  const sliderRef = useRef(null);
-  const inputRef = useRef(null);
-
-  const percentage = ((value - min) / (max - min)) * 100;
+  const [isToggleDisabled, setIsToggleDisabled] = useState(false);
 
   const getAnimationTokens = () => {
     if (customTokens) {
       return {
         duration: customTokens.duration,
-        motion: customTokens.motion
+        motion: customTokens.motion,
+        stiffness: customTokens.ACCORDION_ARROW_STIFFNESS || tokens.ACCORDION_ARROW_STIFFNESS,
+        damping: customTokens.ACCORDION_ARROW_DAMPING || tokens.ACCORDION_ARROW_DAMPING,
+        mass: customTokens.ACCORDION_ARROW_MASS || tokens.ACCORDION_ARROW_MASS
       };
     } else {
       return {
-        duration: tokens.SLIDER_TRANSITION_DURATION,
-        motion: tokens.SLIDER_TRANSITION_EASING
+        duration: tokens.ACCORDION_TRANSITION_DURATION,
+        motion: tokens.ACCORDION_TRANSITION_EASING,
+        stiffness: tokens.ACCORDION_ARROW_STIFFNESS,
+        damping: tokens.ACCORDION_ARROW_DAMPING,
+        mass: tokens.ACCORDION_ARROW_MASS
       };
     }
   };
 
-  const getCustomSliderTransitionStyle = (isDragging, isAnimating) => {
-    if (isDragging && !isAnimating) {
-      return 'none';
-    }
+  const getCustomArrowAnimation = () => {
+    const animTokens = getAnimationTokens();
     
-    if (customTokens && isAnimating) {
-      const longestDuration = customTokens.SLIDER_TRANSITION_DURATION || customTokens.duration;
-      const motionType = customTokens.SLIDER_TRANSITION_EASING || customTokens.motion;
-      
-      return `left ${longestDuration} ${motionType}, right ${longestDuration} ${motionType}`;
-    }
-    
-    return isAnimating
-      ? `left ${tokens.SLIDER_TRANSITION_DURATION} ${tokens.SLIDER_TRANSITION_EASING}, 
-         right ${tokens.SLIDER_TRANSITION_DURATION} ${tokens.SLIDER_TRANSITION_EASING}`
-      : 'none';
-  };
-
-  const handleInputChange = (e) => {
-    const newValue = Math.min(
-      Math.max(parseInt(e.target.value) || min, min),
-      max
-    );
-    setValue(newValue);
-    startAnimation();
-    if (onChange) onChange(newValue);
-  };
-
-  const focusInput = () => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-      setIsFocused(true);
-    }
-  };
-
-  const handleInputFocus = () => {
-    setIsFocused(true);
-  };
-
-  const handleInputBlur = () => {
-    setIsFocused(false);
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      const newValue = Math.min(value + step, max);
-      setValue(newValue);
-      stopAnimation();
-      if (onChange) onChange(newValue);
-    } else if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      const newValue = Math.max(value - step, min);
-      setValue(newValue);
-      stopAnimation();
-      if (onChange) onChange(newValue);
-    }
-  };
-
-  const handleInputContainerClick = (e) => {
-    focusInput();
-    e.stopPropagation();
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isDragging || !sliderRef.current) return;
-
-    const sliderRect = sliderRef.current.getBoundingClientRect();
-    const sliderWidth = sliderRect.width;
-    const offset = Math.min(
-      Math.max(0, e.clientX - sliderRect.left),
-      sliderWidth
-    );
-
-    let newPercentage = Math.max(
-      0,
-      Math.min(100, (offset / sliderWidth) * 100)
-    );
-    let newValue =
-      min + Math.round(((newPercentage / 100) * (max - min)) / step) * step;
-
-    stopAnimation();
-    setValue(newValue);
-
-    e.preventDefault();
-  };
-
-  const handleDragStart = (e) => {
-    console.log('Drag start');
-    setIsDragging(true);
-    stopAnimation();
-
-    e.preventDefault();
-    e.stopPropagation();
-    document.body.style.userSelect = 'none';
-  };
-
-  const handleDragEnd = () => {
-    console.log('Drag end');
-    setIsDragging(false);
-    document.body.style.userSelect = '';
-  };
-
-  useEffect(() => {
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleDragEnd);
-    }
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleDragEnd);
+    return {
+      transition: {
+        duration: parseFloat(animTokens.duration) / 1000 || 0.15,
+        ease: animTokens.motion,
+        type: "spring",
+        stiffness: animTokens.stiffness,
+        damping: animTokens.damping,
+        mass: animTokens.mass
+      }
     };
-  }, [isDragging]);
-
-  const handleAxisClick = (e) => {
-    if (!sliderRef.current || isDragging) return;
-
-    const sliderRect = sliderRef.current.getBoundingClientRect();
-    const sliderWidth = sliderRect.width;
-    const offset = e.clientX - sliderRect.left;
-
-    let newPercentage = Math.max(
-      0,
-      Math.min(100, (offset / sliderWidth) * 100)
-    );
-    let newValue =
-      min + Math.round(((newPercentage / 100) * (max - min)) / step) * step;
-
-    setValue(newValue);
-
-    setIsDragging(true);
-
-    startAnimation();
-
-    document.addEventListener('mouseup', handleDragEnd);
-    document.addEventListener('mousemove', handleMouseMove);
-
-    if (onChange) onChange(newValue);
-
-    e.preventDefault();
-    e.stopPropagation();
-    document.body.style.userSelect = 'none';
   };
 
-  const handleStepClick = (stepValue) => (e) => {
-    if (isDragging) return;
-
-    setValue(stepValue);
-
-    setIsDragging(true);
-
-    startAnimation();
-
-    document.addEventListener('mouseup', handleDragEnd);
-    document.addEventListener('mousemove', handleMouseMove);
-
-    if (onChange) onChange(stepValue);
-
-    e.preventDefault();
-    e.stopPropagation();
-    document.body.style.userSelect = 'none';
+  const getCustomContentAnimation = () => {
+    const animTokens = getAnimationTokens();
+    
+    return {
+      initial: { height: 0, opacity: 0 },
+      animate: { height: "auto", opacity: 1 },
+      exit: { height: 0, opacity: 0 },
+      transition: {
+        height: {
+          duration: parseFloat(animTokens.duration) / 1000 || 0.25,
+          ease: "easeInOut",
+          type: "tween"
+        },
+        opacity: {
+          duration: parseFloat(tokens.ACCORDION_CONTENT_OPACITY_DURATION) / 1000 || 0.15,
+          ease: tokens.ACCORDION_CONTENT_OPACITY_EASING
+        }
+      },
+      style: { overflow: "hidden" }
+    };
   };
 
-  const handleHintsContainerClick = (e) => {
-    if (isDragging) return;
-
-    if (
-      e.target.className.includes('component-valueHint-1ed-11-0-8') ||
-      e.target.className.includes('component-hintText-eb7-11-0-8')
-    ) {
-      return;
-    }
-
-    const containerRect = e.currentTarget.getBoundingClientRect();
-    const containerWidth = containerRect.width;
-    const offset = e.clientX - containerRect.left;
-
-    let newPercentage = Math.max(
-      0,
-      Math.min(100, (offset / containerWidth) * 100)
-    );
-    let newValue =
-      min + Math.round(((newPercentage / 100) * (max - min)) / step) * step;
-
-    setValue(newValue);
-
-    setIsDragging(true);
-
+  const toggleAccordion = () => {
+    if (isToggleDisabled) return;
+    
+    setIsToggleDisabled(true);
+    setIsOpen(!isOpen);
     startAnimation();
-
-    document.addEventListener('mouseup', handleDragEnd);
-    document.addEventListener('mousemove', handleMouseMove);
-
-    if (onChange) onChange(newValue);
-
-    e.preventDefault();
-    e.stopPropagation();
-    document.body.style.userSelect = 'none';
+    
+    const animDuration = extractMs(customTokens?.ACCORDION_TRANSITION_DURATION || 
+                                  tokens.ACCORDION_TRANSITION_DURATION);
+    
+    const disableTime = animDuration + 100;
+    
+    setTimeout(() => {
+      setIsToggleDisabled(false);
+    }, disableTime);
   };
 
-  const renderWithInput = () => (
-    <div className="_Gq5_ ql7Up" data-e2e-id="slider-default">
-      <div style={{ width: '282px' }}>
-        <div
-          className={`slider-inputRoot-bee-11-0-8 ${
-            isDragging ? 'component-dragging-input' : ''
-          }`}
-          data-e2e-id="slider"
+  return (
+    <div className="_Gq5_ ql7Up" data-e2e-id="accordion-base">
+      <div className="f_vB6">
+        <div 
+          className="acr-root-bdf-12-2-0 acr-divider-502-12-2-0" 
+          data-e2e-id="accordion-default" 
+          tabIndex="0"
+          role="presentation"
         >
-          <div
-            className="inpt-fluid-199-12-3-0"
-            style={getInputDraggingStyle(isDragging)}
+          <div 
+            onClick={toggleAccordion}
+            data-e2e-id="accordion-default--toggle-button" 
+            className="acr-wrapTop-79f-12-2-0" 
+            tabIndex="-1"
+            style={{ cursor: 'pointer' }}
           >
-            <div
-              className={`inpt-root-670-12-3-0 inpt-large-258-12-3-0 inpt-primary-8dd-12-3-0 inpt-notEmpty-432-12-3-0 inpt-fluid-199-12-3-0 inpt-hasLabel-14b-12-3-0 nmbr-inp-root-220-11-1-0 ${
-                isFocused ? 'inpt-focused-b65-12-3-0' : ''
-              }`}
-              data-e2e-id="slider-input"
-              onClick={handleInputContainerClick}
-              style={getInputDraggingStyle(isDragging)}
-            >
-              <div className="inpt-inputContainer-d7e-12-3-0">
-                <input
-                  ref={inputRef}
-                  className="inpt-input-3c4-12-3-0"
-                  step={step}
-                  tabIndex="0"
-                  value={value}
-                  onChange={handleInputChange}
-                  onFocus={handleInputFocus}
-                  onBlur={handleInputBlur}
-                  onKeyDown={handleKeyDown}
-                />
-                <label className="inpt-label-a7f-12-3-0 inpt-labelWithoutLabelId-299-12-3-0">
-                  {label}
-                </label>
+            <div className="acr-defaultTitle-147-12-2-0">
+              <div className="acr-wrapTitles-556-12-2-0">
+                <div className="acr-header-e6e-12-2-0">
+                  <div>
+                    <div className="acr-wrapTitle-d35-12-2-0">
+                      <h2 className="tg-heading-small-dc0-7-0-3">
+                        <div className="acr-title-c71-12-2-0">{title}</div>
+                      </h2>
+                    </div>
+                    <h5 className="acr-subtitle-d8b-12-2-0">{subtitle}</h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="acr-arrow-60f-12-2-0">
+              <div className="icon-root-864-6-0-3 acr-icon-ea7-12-2-0">
+                <motion.svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  width="16" 
+                  height="16" 
+                  fill="none"
+                  animate={{ rotate: isOpen ? 180 : 0 }}
+                  transition={customTokens ? getCustomArrowAnimation().transition : arrowAnimation.transition}
+                  style={{ transformOrigin: 'center' }}
+                >
+                  <path 
+                    fill="currentColor" 
+                    fillRule="evenodd"
+                    d="M7.41 11.09a.833.833 0 0 0 1.18 0l5-5a.833.833 0 0 0-1.18-1.18L8 9.322l-4.41-4.41A.833.833 0 0 0 2.41 6.09l5 5Z"
+                    clipRule="evenodd"
+                  />
+                </motion.svg>
               </div>
             </div>
           </div>
-
-          <span
-            className={`slider-root-80f-11-0-8 slider-inputSliderMode-be3-11-0-8 ${
-              isDragging ? 'slider-dragging' : ''
-            }`}
-            data-e2e-id="slider-slider"
-          >
-            <span
-              className="slider-axisContainer-04b-11-0-8"
-              ref={sliderRef}
-              onMouseDown={handleAxisClick}
-            >
-              <span className="slider-axis-923-11-0-8">
-                <span
-                  className="slider-axisFill-f1d-11-0-8"
-                  style={{
-                    right: `${100 - percentage}%`,
-                    transition: getCustomSliderTransitionStyle(
-                      isDragging,
-                      isAnimating
-                    ),
-                  }}
-                />
-              </span>
-
-              <span
-                className={`slider-thumb-2b5-11-0-8 ${
-                  isDragging ? 'slider-dragging' : ''
-                }`}
-                data-e2e-id="slider-slider-thumb"
-                style={{
-                  left: `${percentage}%`,
-                  transition: getCustomSliderTransitionStyle(isDragging, isAnimating),
-                  cursor: isDragging ? 'grabbing' : 'grab',
-                }}
-                onMouseDown={handleDragStart}
-                tabIndex="0"
+          <AnimatePresence mode="wait" initial={false}>
+            {isOpen && (
+              <motion.div 
+                key="content"
+                layout="position"
+                className="acr-content-c3a-12-2-0"
+                initial={contentAnimation.initial}
+                animate={contentAnimation.animate}
+                exit={contentAnimation.exit}
+                transition={customTokens ? getCustomContentAnimation().transition : contentAnimation.transition}
+                style={contentAnimation.style}
               >
-                <span className="slider-thumbInner-c38-11-0-8">
-                  <span className="slider-thumbInnerDot"></span>
-                </span>
-              </span>
-            </span>
-
-            <span
-              className="slider-valueHints-c0e-11-0-8"
-              onMouseDown={handleHintsContainerClick}
-              style={{ cursor: 'pointer' }}
-            >
-              {steps.map((step, index) => (
-                <span
-                  key={index}
-                  className="slider-valueHint-1ed-11-0-8"
-                  onMouseDown={handleStepClick(step)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <span className="slider-hintText-eb7-11-0-8">{step}</span>
-                </span>
-              ))}
-            </span>
-          </span>
+                <div 
+                  className="tg-body-standard-regular-bdb-7-0-3"
+                  style={{ padding: "0 24px 24px" }}
+                >{content}</div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>
   );
-
-  const renderWithoutInput = () => (
-    <div className="_Gq5_ ql7Up" data-e2e-id="slider-default">
-      <div style={{ width: '282px' }}>
-        <span
-          className={`slider-root-80f-11-0-8 ${
-            active ? 'slider-active-c30-11-0-8' : ''
-          } ${isDragging ? 'slider-dragging' : ''}`}
-          data-e2e-id="slider"
-          tabIndex="0"
-        >
-          <span
-            className="slider-axisContainer-04b-11-0-8"
-            ref={sliderRef}
-            onMouseDown={handleAxisClick}
-          >
-            <span className="slider-axis-923-11-0-8">
-              <span
-                className="slider-axisFill-f1d-11-0-8"
-                style={{
-                  right: `${100 - percentage}%`,
-                  transition: getCustomSliderTransitionStyle(isDragging, isAnimating),
-                }}
-              />
-            </span>
-
-            <span
-              className={`slider-thumb-2b5-11-0-8 ${
-                isDragging ? 'slider-dragging' : ''
-              }`}
-              data-e2e-id="slider-thumb"
-              style={{
-                left: `${percentage}%`,
-                transition: getCustomSliderTransitionStyle(isDragging, isAnimating),
-                cursor: isDragging ? 'grabbing' : 'grab',
-              }}
-              onMouseDown={handleDragStart}
-              tabIndex="0"
-            >
-              <span className="slider-thumbInner-c38-11-0-8">
-                <span className="slider-thumbInnerDot"></span>
-              </span>
-            </span>
-          </span>
-
-          <span
-            className="slider-valueHints-c0e-11-0-8"
-            onMouseDown={handleHintsContainerClick}
-            style={{ cursor: 'pointer' }}
-          >
-            {steps.map((step, index) => (
-              <span
-                key={index}
-                className="slider-valueHint-1ed-11-0-8"
-                onMouseDown={handleStepClick(step)}
-                style={{ cursor: 'pointer' }}
-              >
-                <span className="slider-hintText-eb7-11-0-8">{step}</span>
-              </span>
-            ))}
-          </span>
-        </span>
-      </div>
-    </div>
-  );
-
-  return withInput ? renderWithInput() : renderWithoutInput();
 };
 
 export default Component;
