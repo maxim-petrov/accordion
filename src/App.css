@@ -282,17 +282,35 @@
   flex-direction: column;
   gap: 10px;
   margin-bottom: 10px;
+  position: relative;
 }
 
 .token-controls select {
   flex: 1;
-  padding: 8px;
+  padding: 8px 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
   background-color: #fff;
   font-size: 0.9rem;
   min-height: 40px;
   width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 30px;
+}
+
+.token-controls::after {
+  content: '';
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-right: 1.5px solid #888;
+  border-bottom: 1.5px solid #888;
+  transform: translateY(-50%) rotate(45deg);
+  pointer-events: none;
 }
 
 .component-group {
