@@ -1,17 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  useAccordionAnimation,
-  accordionAnimationConfig,
-  arrowAnimation,
-  contentAnimation,
-} from './scripts/animation.js';
+import { useAccordionAnimation } from './scripts/animation.js';
 import { extractMs } from './scripts/utils.js';
+import tokens from './tokens/utils/tokenUtils';
+import { useTokens } from './context/TokenContext';
 import '../index.css';
 import './styles/component.scss';
 import './styles/animation.scss';
-import tokens from './tokens/utils/tokenUtils';
-import { useTokens } from './context/TokenContext';
 
 const Component = ({
   title = 'Заголовок',
@@ -19,105 +14,104 @@ const Component = ({
   content = 'Оригинал документа, на основании которого продавец стал собственником квартиры. Например, договор купли-продажи, договор долевого участия, договор дарения и другие (находится у собственника)',
 }) => {
   const { tokenValues: customTokens } = useTokens();
+
+  // Duration from tokens or fallback
+  const defaultDuration = customTokens?.ACCORDION_TRANSITION_DURATION || tokens.ACCORDION_TRANSITION_DURATION;
   const [isOpen, setIsOpen] = useState(false);
-  const [isAnimating, startAnimation, stopAnimation] = useAccordionAnimation(
-    customTokens?.ACCORDION_ANIMATION_DURATION || null,
-    customTokens?.ACCORDION_TRANSITION_DURATION || tokens.ACCORDION_TRANSITION_DURATION
-  );
   const [isToggleDisabled, setIsToggleDisabled] = useState(false);
 
-  const getAnimationTokens = () => {
-    if (customTokens) {
-      return {
-        duration: customTokens.duration,
-        motion: customTokens.motion,
-        stiffness: customTokens.ACCORDION_ARROW_STIFFNESS || tokens.ACCORDION_ARROW_STIFFNESS,
-        damping: customTokens.ACCORDION_ARROW_DAMPING || tokens.ACCORDION_ARROW_DAMPING,
-        mass: customTokens.ACCORDION_ARROW_MASS || tokens.ACCORDION_ARROW_MASS
-      };
-    } else {
-      return {
-        duration: tokens.ACCORDION_TRANSITION_DURATION,
-        motion: tokens.ACCORDION_TRANSITION_EASING,
-        stiffness: tokens.ACCORDION_ARROW_STIFFNESS,
-        damping: tokens.ACCORDION_ARROW_DAMPING,
-        mass: tokens.ACCORDION_ARROW_MASS
-      };
-    }
-  };
+  // If you have your own “useAccordionAnimation”, that’s fine:
+  const [, startAnimation] = useAccordionAnimation(null, defaultDuration);
 
-  const getCustomArrowAnimation = () => {
-    const animTokens = getAnimationTokens();
-    
-    return {
-      transition: {
-        type: "spring",
-        stiffness: parseFloat(animTokens.stiffness),
-        damping: parseFloat(animTokens.damping),
-        mass: parseFloat(animTokens.mass)
-      }
-    };
-  };
+  // Convert durations from ms → s for Framer Motion
+  const numericMs = extractMs(defaultDuration);
+  const durationSec = numericMs / 1000;
 
-  const getCustomContentAnimation = () => {
-    const animTokens = getAnimationTokens();
-    
-    return {
-      initial: { height: 0, opacity: 0 },
-      animate: { height: "auto", opacity: 1 },
-      exit: { height: 0, opacity: 0 },
+  // Anim tokens
+  const stiffness = parseFloat(
+    customTokens?.ACCORDION_ARROW_STIFFNESS || tokens.ACCORDION_ARROW_STIFFNESS
+  );
+  const damping = parseFloat(
+    customTokens?.ACCORDION_ARROW_DAMPING || tokens.ACCORDION_ARROW_DAMPING
+  );
+  const mass = parseFloat(
+    customTokens?.ACCORDION_ARROW_MASS || tokens.ACCORDION_ARROW_MASS
+  );
+
+  // --- Variants approach ---
+  // The big trick is “open” vs. “closed” states, each with its own transitions.
+  const contentVariants = {
+    closed: {
+      height: 0,
+      opacity: 0,
       transition: {
         height: {
-          type: isOpen ? "spring" : "tween",
-          ...(isOpen && {
-            stiffness: parseFloat(animTokens.stiffness),
-            damping: parseFloat(animTokens.damping),
-            mass: parseFloat(animTokens.mass)
-          }),
-          ...(!isOpen && {
-            duration: parseFloat(animTokens.duration) / 1000 || 0.25,
-            ease: "easeInOut"
-          })
+          type: 'tween',
+          duration: durationSec || 0.25,
+          ease: 'easeInOut',
         },
         opacity: {
-          duration: parseFloat(tokens.ACCORDION_CONTENT_OPACITY_DURATION) / 1000 || 0.15,
-          ease: tokens.ACCORDION_CONTENT_OPACITY_EASING
-        }
+          duration: 0.15,
+          ease: 'easeInOut',
+        },
       },
-      style: { overflow: "hidden" }
-    };
+    },
+    open: {
+      height: 'auto',
+      opacity: 1,
+      transition: {
+        height: {
+          // Spring on open
+          type: 'spring',
+          stiffness,
+          damping,
+          mass,
+        },
+        opacity: {
+          duration: 0.15,
+          ease: 'easeOut',
+        },
+      },
+    },
   };
 
+  const arrowVariants = {
+    closed: { rotate: 0 },
+    open: { rotate: 180 },
+  };
+  const arrowTransition = {
+    type: 'spring',
+    stiffness,
+    damping,
+    mass,
+  };
+
+  // Toggle function
   const toggleAccordion = () => {
     if (isToggleDisabled) return;
-    
     setIsToggleDisabled(true);
-    setIsOpen(!isOpen);
+
+    setIsOpen((prev) => !prev);
     startAnimation();
-    
-    const animDuration = extractMs(customTokens?.ACCORDION_TRANSITION_DURATION || 
-                                  tokens.ACCORDION_TRANSITION_DURATION);
-    
-    const disableTime = animDuration + 100;
-    
-    setTimeout(() => {
-      setIsToggleDisabled(false);
-    }, disableTime);
+
+    // Lock the toggle just for the base animation duration
+    setTimeout(() => setIsToggleDisabled(false), numericMs);
   };
 
   return (
     <div className="_Gq5_ ql7Up" data-e2e-id="accordion-base">
       <div className="f_vB6">
-        <div 
-          className="acr-root-bdf-12-2-0 acr-divider-502-12-2-0" 
-          data-e2e-id="accordion-default" 
+        <div
+          className="acr-root-bdf-12-2-0 acr-divider-502-12-2-0"
+          data-e2e-id="accordion-default"
           tabIndex="0"
           role="presentation"
         >
-          <div 
+          {/* HEADER / TOGGLE BUTTON */}
+          <div
             onClick={toggleAccordion}
-            data-e2e-id="accordion-default--toggle-button" 
-            className="acr-wrapTop-79f-12-2-0" 
+            data-e2e-id="accordion-default--toggle-button"
+            className="acr-wrapTop-79f-12-2-0"
             tabIndex="-1"
             style={{ cursor: 'pointer' }}
           >
@@ -135,19 +129,21 @@ const Component = ({
                 </div>
               </div>
             </div>
+            {/* Arrow */}
             <div className="acr-arrow-60f-12-2-0">
               <div className="icon-root-864-6-0-3 acr-icon-ea7-12-2-0">
-                <motion.svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  width="16" 
-                  height="16" 
+                <motion.svg
+                  width="16"
+                  height="16"
                   fill="none"
-                  animate={{ rotate: isOpen ? 180 : 0 }}
-                  transition={customTokens ? getCustomArrowAnimation().transition : arrowAnimation.transition}
                   style={{ transformOrigin: 'center' }}
+                  variants={arrowVariants}
+                  animate={isOpen ? 'open' : 'closed'}
+                  transition={arrowTransition}
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  <path 
-                    fill="currentColor" 
+                  <path
+                    fill="currentColor"
                     fillRule="evenodd"
                     d="M7.41 11.09a.833.833 0 0 0 1.18 0l5-5a.833.833 0 0 0-1.18-1.18L8 9.322l-4.41-4.41A.833.833 0 0 0 2.41 6.09l5 5Z"
                     clipRule="evenodd"
@@ -156,33 +152,24 @@ const Component = ({
               </div>
             </div>
           </div>
-          <AnimatePresence mode="wait" initial={false}>
+
+          {/* AnimatePresence for unmounting on close. */}
+          <AnimatePresence initial={false}>
             {isOpen && (
-              <motion.div 
-                key="content"
-                layout="position"
+              <motion.div
+                // Instead of key="content", let AnimatePresence handle it
                 className="acr-content-c3a-12-2-0"
-                initial={contentAnimation.initial}
-                animate={contentAnimation.animate}
-                exit={contentAnimation.exit}
-                transition={customTokens ? getCustomContentAnimation().transition : {
-                  height: {
-                    type: isOpen ? "spring" : "tween",
-                    ...(isOpen && {
-                      stiffness: parseFloat(tokens.ACCORDION_ARROW_STIFFNESS),
-                      damping: parseFloat(tokens.ACCORDION_ARROW_DAMPING),
-                      mass: parseFloat(tokens.ACCORDION_ARROW_MASS)
-                    }),
-                    ...(!isOpen && contentAnimation.transition.height)
-                  },
-                  opacity: contentAnimation.transition.opacity
-                }}
-                style={contentAnimation.style}
+                style={{ overflow: 'hidden' }}
+                // We use variants instead of manual initial/animate/exit
+                variants={contentVariants}
+                initial="closed"
+                animate="open"
+                exit="closed"
               >
-                <div 
-                  className="tg-body-standard-regular-bdb-7-0-3"
-                  style={{ padding: "0 24px 24px" }}
-                >{content}</div>
+                {/* Put padding on an inner wrapper so "height" anim is clean */}
+                <div style={{ padding: '0 24px 24px' }}>
+                  {content}
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
