@@ -141,7 +141,6 @@ function TokenConfig() {
                       </span>
                     )}
                   </label>
-                  <span className="token-technical-name">{tokenName}</span>
                 </div>
                 <div className="token-controls">
                   <select 
