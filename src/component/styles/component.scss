@@ -150,7 +150,21 @@
 
 .acr-content-c3a-12-2-0 {
   color: var(--color_text_primary,#262626);
-  opacity: 0
+  opacity: 0;
+  ul {
+    margin: 10px 0;
+    padding-left: 20px;
+    
+    li {
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+  }
+  
+  p {
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
 }
 
 .acr-contentOpen-84d-12-2-0 {
