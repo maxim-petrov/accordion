@@ -14,16 +14,16 @@ const defaultAliases = {
   // Animation durations
   "ACCORDION_CONTENT_TRANSITION_DURATION": "Opening speed",
   "ACCORDION_ANIMATION_DURATION": "Animation duration",
-  "ACCORDION_TRANSITION_DURATION": "Transition duration",
+  "ACCORDION_TRANSITION_DURATION": "Скорость закрытия аккордеона",
   
   // Easing functions
   "ACCORDION_CONTENT_TRANSITION_EASING": "Opening easing",
-  "ACCORDION_TRANSITION_EASING": "Transition easing",
+  "ACCORDION_TRANSITION_EASING": "Плавность закрытия аккордеона",
   "ACCORDION_CONTENT_OPACITY_EASING": "Fade easing",
   
   // Animation presets
-  "ACCORDION_ARROW_PRESET": "Arrow animation",
-  "ACCORDION_CONTENT_PRESET": "Content animation",
+  "ACCORDION_ARROW_PRESET": "Анимация стрелки",
+  "ACCORDION_CONTENT_PRESET": "Аницация контента",
   
   // Individual spring parameters (hidden from default view)
   "ACCORDION_ARROW_STIFFNESS": "Arrow stiffness",
@@ -31,7 +31,13 @@ const defaultAliases = {
   "ACCORDION_ARROW_MASS": "Arrow mass",
   "ACCORDION_CONTENT_STIFFNESS": "Content stiffness",
   "ACCORDION_CONTENT_DAMPING": "Content damping",
-  "ACCORDION_CONTENT_MASS": "Content mass"
+  "ACCORDION_CONTENT_MASS": "Content mass",
+
+  "ACCORDION_TEXT_TRANSITION_DURATION": "Скорость скрытия текста",
+  "ACCORDION_TEXT_TRANSITION_EASING": "Плавность скрытия текста",
+
+  "ACCORDION_TEXT_SHOW_TRANSITION_DURATION": "Скорость появления текста",
+  "ACCORDION_TEXT_SHOW_TRANSITION_EASING": "Плавность появления текста",
 };
 
 // Get stored aliases from localStorage if available
