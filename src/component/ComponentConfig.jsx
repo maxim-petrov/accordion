@@ -197,7 +197,7 @@ function TokenConfig() {
           onClick={handleResetAliases}
           title="Reset all aliases to default values"
         >
-          Reset Aliases
+          Reset
         </button>
       </div>
       
