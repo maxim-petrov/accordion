@@ -60,8 +60,6 @@ export const getContentAnimationConfig = (tokens) => ({
       stiffness: parseFloat(tokens.ACCORDION_ARROW_STIFFNESS),
       damping: parseFloat(tokens.ACCORDION_ARROW_DAMPING),
       mass: parseFloat(tokens.ACCORDION_ARROW_MASS),
-      // For closing animation, use regular tween
-      exit: { type: "tween", duration: extractMs(tokens.ACCORDION_CONTENT_TRANSITION_DURATION) / 1000, ease: "easeInOut" }
     },
     opacity: {
       duration: extractMs(tokens.ACCORDION_CONTENT_OPACITY_DURATION) / 1000,

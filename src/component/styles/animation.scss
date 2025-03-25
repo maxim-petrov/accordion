@@ -4,23 +4,10 @@
   transition: color $ACCORDION_TRANSITION_DURATION $ACCORDION_TRANSITION_EASING;
 }
 
-.acr-arrow-60f-12-2-0 {
-  transition: background-color $ACCORDION_ARROW_ROTATION_DURATION ease-in-out;
-}
-
-.acr-icon-ea7-12-2-0 {
-  transition: transform $ACCORDION_ARROW_ROTATION_DURATION ease-in-out;
-}
-
 .acr-iconActive-d9e-12-2-0 {
   transform: rotate(180deg);
 }
 
-.acr-content-c3a-12-2-0 {
-  transition: 
-    max-height $ACCORDION_CONTENT_TRANSITION_DURATION $ACCORDION_CONTENT_TRANSITION_EASING,
-    opacity $ACCORDION_CONTENT_OPACITY_DURATION $ACCORDION_CONTENT_OPACITY_EASING;
-}
 
 @keyframes acr-fadeInUp-eb1-12-2-0 {
   0% {
