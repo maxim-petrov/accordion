@@ -4,7 +4,20 @@ import componentTokens from '../tokens/tokens.json';
 
 export function initializeTokenValues() {
   const initialTokens = {};
+  
+  // Process presets first to ensure they're available for the individual parameters
   Object.entries(componentTokens).forEach(([key, value]) => {
+    if (key.includes('PRESET')) {
+      initialTokens[key] = value;
+    }
+  });
+  
+  Object.entries(componentTokens).forEach(([key, value]) => {
+    // Skip presets as they're already processed
+    if (key.includes('PRESET')) {
+      return;
+    }
+    
     if (typeof value === 'string' && value.startsWith('tokens.')) {
       if (value.startsWith('tokens.spring')) {
         const match = value.match(/tokens\.spring\('(.+?)'\)\.(.+)/);

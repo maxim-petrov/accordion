@@ -21,15 +21,17 @@ const defaultAliases = {
   "ACCORDION_TRANSITION_EASING": "Transition easing",
   "ACCORDION_CONTENT_OPACITY_EASING": "Fade easing",
   
-  // Arrow animation
-  "ACCORDION_ARROW_STIFFNESS": "Arrow bounce stiffness",
-  "ACCORDION_ARROW_DAMPING": "Arrow bounce damping",
-  "ACCORDION_ARROW_MASS": "Arrow weight",
+  // Animation presets
+  "ACCORDION_ARROW_PRESET": "Arrow animation",
+  "ACCORDION_CONTENT_PRESET": "Content animation",
   
-  // Content animation
-  "ACCORDION_CONTENT_STIFFNESS": "Content bounce stiffness",
-  "ACCORDION_CONTENT_DAMPING": "Content bounce damping",
-  "ACCORDION_CONTENT_MASS": "Content weight"
+  // Individual spring parameters (hidden from default view)
+  "ACCORDION_ARROW_STIFFNESS": "Arrow stiffness",
+  "ACCORDION_ARROW_DAMPING": "Arrow damping",
+  "ACCORDION_ARROW_MASS": "Arrow mass",
+  "ACCORDION_CONTENT_STIFFNESS": "Content stiffness",
+  "ACCORDION_CONTENT_DAMPING": "Content damping",
+  "ACCORDION_CONTENT_MASS": "Content mass"
 };
 
 // Get stored aliases from localStorage if available

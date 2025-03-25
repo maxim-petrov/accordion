@@ -15,6 +15,15 @@ function TokenConfig() {
   const [isEditingAlias, setIsEditingAlias] = useState({});
   const [aliasEdits, setAliasEdits] = useState({});
   const [customSelections, setCustomSelections] = useState({});
+  // Track which tokens should be hidden (individual spring parameters when using presets)
+  const [hiddenTokens, setHiddenTokens] = useState({
+    ACCORDION_ARROW_STIFFNESS: true,
+    ACCORDION_ARROW_DAMPING: true,
+    ACCORDION_ARROW_MASS: true,
+    ACCORDION_CONTENT_STIFFNESS: true,
+    ACCORDION_CONTENT_DAMPING: true,
+    ACCORDION_CONTENT_MASS: true
+  });
 
   useEffect(() => {
     onTokenChange(tokenValues);
@@ -47,6 +56,12 @@ function TokenConfig() {
     }
   }));
 
+  // Create spring preset options
+  const springPresets = Object.keys(rootTokens.spring).map(type => ({
+    label: type.charAt(0).toUpperCase() + type.slice(1),  // Capitalize
+    value: type
+  }));
+
   const handleTokenChange = (tokenName) => (e) => {
     let newValue = e.target.value;
     
@@ -56,6 +71,23 @@ function TokenConfig() {
         ...prev,
         [tokenName]: true
       }));
+      
+      // If this is a preset selector, show the individual parameters
+      if (tokenName === 'ACCORDION_ARROW_PRESET') {
+        setHiddenTokens(prev => ({
+          ...prev,
+          ACCORDION_ARROW_STIFFNESS: false,
+          ACCORDION_ARROW_DAMPING: false,
+          ACCORDION_ARROW_MASS: false
+        }));
+      } else if (tokenName === 'ACCORDION_CONTENT_PRESET') {
+        setHiddenTokens(prev => ({
+          ...prev,
+          ACCORDION_CONTENT_STIFFNESS: false,
+          ACCORDION_CONTENT_DAMPING: false,
+          ACCORDION_CONTENT_MASS: false
+        }));
+      }
       // Don't update the token value yet, wait for custom input
       return;
     } else {
@@ -63,12 +95,50 @@ function TokenConfig() {
         ...prev,
         [tokenName]: false
       }));
+      
+      // If this is a preset selector, update all related spring properties
+      let updatedValues = {
+        ...tokenValues,
+        [tokenName]: newValue
+      };
+      
+      if (tokenName === 'ACCORDION_ARROW_PRESET' && rootTokens.spring[newValue]) {
+        // Hide individual parameters when using a preset
+        setHiddenTokens(prev => ({
+          ...prev,
+          ACCORDION_ARROW_STIFFNESS: true,
+          ACCORDION_ARROW_DAMPING: true,
+          ACCORDION_ARROW_MASS: true
+        }));
+        
+        // Update the individual spring parameters to match the selected preset
+        updatedValues = {
+          ...updatedValues,
+          ACCORDION_ARROW_STIFFNESS: rootTokens.spring[newValue].stiffness.toString(),
+          ACCORDION_ARROW_DAMPING: rootTokens.spring[newValue].damping.toString(),
+          ACCORDION_ARROW_MASS: rootTokens.spring[newValue].mass.toString()
+        };
+      } else if (tokenName === 'ACCORDION_CONTENT_PRESET' && rootTokens.spring[newValue]) {
+        // Hide individual parameters when using a preset
+        setHiddenTokens(prev => ({
+          ...prev,
+          ACCORDION_CONTENT_STIFFNESS: true,
+          ACCORDION_CONTENT_DAMPING: true,
+          ACCORDION_CONTENT_MASS: true
+        }));
+        
+        // Update the individual spring parameters to match the selected preset
+        updatedValues = {
+          ...updatedValues,
+          ACCORDION_CONTENT_STIFFNESS: rootTokens.spring[newValue].stiffness.toString(),
+          ACCORDION_CONTENT_DAMPING: rootTokens.spring[newValue].damping.toString(),
+          ACCORDION_CONTENT_MASS: rootTokens.spring[newValue].mass.toString()
+        };
+      }
+      
+      setTokenValues(updatedValues);
+      return;
     }
-    
-    setTokenValues(prev => ({
-      ...prev,
-      [tokenName]: newValue
-    }));
   };
 
   const handleCustomInputChange = (tokenName) => (e) => {
@@ -136,12 +206,15 @@ function TokenConfig() {
           {allTokens.map(([tokenName, tokenValue]) => {
             const isEasing = tokenName.includes('EASING') || tokenName.includes('MOTION');
             const isDuration = tokenName.includes('DURATION');
-            const isStiffness = tokenName.includes('STIFFNESS');
-            const isDamping = tokenName.includes('DAMPING');
-            const isMass = tokenName.includes('MASS');
-            const isSpringParam = isStiffness || isDamping || isMass;
+            const isPreset = tokenName.includes('PRESET');
+            const isSpringParam = tokenName.includes('STIFFNESS') || tokenName.includes('DAMPING') || tokenName.includes('MASS');
             const displayName = getAlias(tokenName);
             const isCustom = customSelections[tokenName];
+            
+            // Skip hidden tokens (individual spring parameters when using presets)
+            if (hiddenTokens[tokenName]) {
+              return null;
+            }
             
             return (
               <div className="token-group" key={tokenName}>
@@ -180,21 +253,33 @@ function TokenConfig() {
                           {option.label}
                         </option>
                       ))}
-                      {isStiffness && availableSprings.map(spring => (
-                        <option key={spring.type + '-stiffness'} value={spring.stiffness.value}>
-                          {spring.stiffness.label}
+                      {isPreset && springPresets.map(preset => (
+                        <option key={preset.value} value={preset.value}>
+                          {preset.label}
                         </option>
                       ))}
-                      {isDamping && availableSprings.map(spring => (
-                        <option key={spring.type + '-damping'} value={spring.damping.value}>
-                          {spring.damping.label}
-                        </option>
-                      ))}
-                      {isMass && availableSprings.map(spring => (
-                        <option key={spring.type + '-mass'} value={spring.mass.value}>
-                          {spring.mass.label}
-                        </option>
-                      ))}
+                      {isSpringParam && availableSprings.map(spring => {
+                        if (tokenName.includes('STIFFNESS')) {
+                          return (
+                            <option key={spring.type + '-stiffness'} value={spring.stiffness.value}>
+                              {spring.stiffness.label}
+                            </option>
+                          );
+                        } else if (tokenName.includes('DAMPING')) {
+                          return (
+                            <option key={spring.type + '-damping'} value={spring.damping.value}>
+                              {spring.damping.label}
+                            </option>
+                          );
+                        } else if (tokenName.includes('MASS')) {
+                          return (
+                            <option key={spring.type + '-mass'} value={spring.mass.value}>
+                              {spring.mass.label}
+                            </option>
+                          );
+                        }
+                        return null;
+                      })}
                     </optgroup>
                     <option value="custom">Custom</option>
                   </select>

@@ -20,6 +20,7 @@ const parseTokenValue = (value) => {
 };
 
 const processedTokens = {
+  "ACCORDION_ARROW_PRESET": "stiff",
   "ACCORDION_ARROW_STIFFNESS": {
     "stiffness": 290,
     "damping": 22.22,
@@ -35,6 +36,7 @@ const processedTokens = {
     "damping": 22.22,
     "mass": 1
   },
+  "ACCORDION_CONTENT_PRESET": "moderate",
   "ACCORDION_CONTENT_STIFFNESS": {
     "stiffness": 210,
     "damping": 20,

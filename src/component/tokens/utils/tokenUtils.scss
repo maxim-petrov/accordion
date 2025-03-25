@@ -2,9 +2,11 @@
   --accordion-animation-duration: 250ms;
   --accordion-arrow-damping: [object Object];
   --accordion-arrow-mass: [object Object];
+  --accordion-arrow-preset: stiff;
   --accordion-arrow-stiffness: [object Object];
   --accordion-content-damping: [object Object];
   --accordion-content-mass: [object Object];
+  --accordion-content-preset: moderate;
   --accordion-content-stiffness: [object Object];
   --accordion-transition-duration: 250ms;
   --accordion-transition-easing: cubic-bezier(.165, .84, .44, 1);
@@ -12,9 +14,11 @@
 $ACCORDION_ANIMATION_DURATION: var(--accordion-animation-duration);
 $ACCORDION_ARROW_DAMPING: var(--accordion-arrow-damping);
 $ACCORDION_ARROW_MASS: var(--accordion-arrow-mass);
+$ACCORDION_ARROW_PRESET: var(--accordion-arrow-preset);
 $ACCORDION_ARROW_STIFFNESS: var(--accordion-arrow-stiffness);
 $ACCORDION_CONTENT_DAMPING: var(--accordion-content-damping);
 $ACCORDION_CONTENT_MASS: var(--accordion-content-mass);
+$ACCORDION_CONTENT_PRESET: var(--accordion-content-preset);
 $ACCORDION_CONTENT_STIFFNESS: var(--accordion-content-stiffness);
 $ACCORDION_TRANSITION_DURATION: var(--accordion-transition-duration);
 $ACCORDION_TRANSITION_EASING: var(--accordion-transition-easing);

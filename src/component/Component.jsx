@@ -11,7 +11,7 @@ import './styles/animation.scss';
 const Component = ({
   title = 'Заголовок',
   subtitle = 'Подзаголовок',
-  content = 'Оригинал документа, на основании которого продавец стал собственником квартиры. Например, договор купли-продажи, договор долевого участия, договор дарения и другие (находится у собственника)',
+  content = 'Оригинал документа, на основании которого продавец стал собственником квартиры. Например, договор купли-продажи, договор долевого участия, договор дарения и другие (находится у собственника)  -- Оригинал документа, на основании которого продавец стал собственником квартиры. Например, договор купли-продажи, договор долевого участия, договор дарения и другие (находится у собственника)Оригинал документа, на основании которого продавец стал собственником квартиры. Например, договор купли-продажи, договор долевого участия, договор дарения и другие (находится у собственника)Оригинал документа, на основании которого продавец стал собственником квартиры. Например, договор купли-продажи, договор долевого участия, договор дарения и другие (находится у собственника)Оригинал документа, на основании которого продавец стал собственником квартиры. Например, договор купли-продажи, договор долевого участия, договор дарения и другие (находится у собственника)Оригинал документа, на основании которого продавец стал собственником квартиры. Например, договор купли-продажи, договор долевого участия, договор дарения и другие (находится у собственника)Оригинал документа, на основании которого продавец стал собственником квартиры. Например, договор купли-продажи, договор долевого участия, договор дарения и другие (находится у собственника)',
 }) => {
   const { tokenValues: customTokens } = useTokens();
 
@@ -26,6 +26,10 @@ const Component = ({
   // Convert durations from ms → s for Framer Motion
   const numericMs = extractMs(defaultDuration);
   const durationSec = numericMs / 1000;
+
+  // Animation presets
+  const arrowPreset = customTokens?.ACCORDION_ARROW_PRESET || tokens.ACCORDION_ARROW_PRESET || 'stiff';
+  const contentPreset = customTokens?.ACCORDION_CONTENT_PRESET || tokens.ACCORDION_CONTENT_PRESET || 'moderate';
 
   // Arrow animation tokens
   const arrowStiffness = parseFloat(
@@ -49,8 +53,14 @@ const Component = ({
     customTokens?.ACCORDION_CONTENT_MASS || tokens.ACCORDION_CONTENT_MASS
   );
 
-  console.log('Arrow spring values:', { stiffness: arrowStiffness, damping: arrowDamping, mass: arrowMass });
-  console.log('Content spring values:', { stiffness: contentStiffness, damping: contentDamping, mass: contentMass });
+  console.log('Arrow animation:', { 
+    preset: arrowPreset,
+    values: { stiffness: arrowStiffness, damping: arrowDamping, mass: arrowMass }
+  });
+  console.log('Content animation:', { 
+    preset: contentPreset,
+    values: { stiffness: contentStiffness, damping: contentDamping, mass: contentMass }
+  });
 
   // --- Variants approach ---
   // The big trick is "open" vs. "closed" states, each with its own transitions.
