@@ -36,20 +36,20 @@ const processedTokens = {
     "damping": 22.22,
     "mass": 1
   },
-  "ACCORDION_CONTENT_PRESET": "moderate",
+  "ACCORDION_CONTENT_PRESET": "stiff",
   "ACCORDION_CONTENT_STIFFNESS": {
-    "stiffness": 210,
-    "damping": 24,
+    "stiffness": 290,
+    "damping": 22.22,
     "mass": 1
   },
   "ACCORDION_CONTENT_DAMPING": {
-    "stiffness": 210,
-    "damping": 24,
+    "stiffness": 290,
+    "damping": 22.22,
     "mass": 1
   },
   "ACCORDION_CONTENT_MASS": {
-    "stiffness": 210,
-    "damping": 24,
+    "stiffness": 290,
+    "damping": 22.22,
     "mass": 1
   },
   "ACCORDION_TEXT_SHOW_TRANSITION_DURATION": "250ms",
