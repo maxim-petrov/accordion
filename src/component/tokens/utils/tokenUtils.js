@@ -55,7 +55,9 @@ const processedTokens = {
   "ACCORDION_TRANSITION_DURATION": "250ms",
   "ACCORDION_TRANSITION_EASING": "cubic-bezier(.165, .84, .44, 1)",
   "ACCORDION_TEXT_TRANSITION_DURATION": "250ms",
-  "ACCORDION_TEXT_TRANSITION_EASING": "cubic-bezier(.165, .84, .44, 1)"
+  "ACCORDION_TEXT_TRANSITION_EASING": "cubic-bezier(.165, .84, .44, 1)",
+  "ACCORDION_TEXT_SHOW_TRANSITION_DURATION": "250ms",
+  "ACCORDION_TEXT_SHOW_TRANSITION_EASING": "cubic-bezier(.165, .84, .44, 1)"
 };
 
 processedTokens.updateToken = function(tokenName, tokenValue) {

@@ -33,6 +33,9 @@ const Component = ({
   const textHidingDurationMS = extractMs(customTokens?.ACCORDION_TEXT_TRANSITION_DURATION || tokens.ACCORDION_TEXT_TRANSITION_DURATION);
   const textHidingDurationSec = textHidingDurationMS / 1000 || 0.2; // Add fallback value
 
+  const textShowDurationMS = extractMs(customTokens?.ACCORDION_TEXT_SHOW_TRANSITION_DURATION || tokens.ACCORDION_TEXT_SHOW_TRANSITION_DURATION);
+  const textShowDurationSec = textShowDurationMS / 1000 || 0.2; // Add fallback value
+
   // Animation presets
   const arrowPreset = customTokens?.ACCORDION_ARROW_PRESET || tokens.ACCORDION_ARROW_PRESET || 'stiff';
   const contentPreset = customTokens?.ACCORDION_CONTENT_PRESET || tokens.ACCORDION_CONTENT_PRESET || 'moderate';
@@ -137,14 +140,13 @@ const Component = ({
       opacity: 1,
       transition: {
         height: {
-          // Spring on open
           type: 'spring',
           stiffness: contentStiffness || 100,
           damping: contentDamping || 20,
           mass: contentMass || 1,
         },
         opacity: {
-          duration: 0.15,
+          duration: textShowDurationSec || 0.2,
           ease: 'easeOut',
         },
       },
