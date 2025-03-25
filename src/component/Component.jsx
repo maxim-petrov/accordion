@@ -24,11 +24,14 @@ const Component = ({
   const [isToggleDisabled, setIsToggleDisabled] = useState(false);
 
   // If you have your own "useAccordionAnimation", that's fine:
-  const [, startAnimation] = useAccordionAnimation(null, defaultDuration);
+  const [, startAnimation] = useAccordionAnimation(null, defaultDuration) || [null, () => {}];
 
   // Convert durations from ms → s for Framer Motion
-  const numericMs = extractMs(defaultDuration);
+  const numericMs = extractMs(defaultDuration) || 300; // Default to 300ms if extraction fails
   const durationSec = numericMs / 1000;
+
+  const textHidingDurationMS = extractMs(customTokens?.ACCORDION_TEXT_TRANSITION_DURATION || tokens.ACCORDION_TEXT_TRANSITION_DURATION);
+  const textHidingDurationSec = textHidingDurationMS / 1000 || 0.2; // Add fallback value
 
   // Animation presets
   const arrowPreset = customTokens?.ACCORDION_ARROW_PRESET || tokens.ACCORDION_ARROW_PRESET || 'stiff';
@@ -37,24 +40,24 @@ const Component = ({
   // Arrow animation tokens
   const arrowStiffness = parseFloat(
     customTokens?.ACCORDION_ARROW_STIFFNESS || tokens.ACCORDION_ARROW_STIFFNESS
-  );
+  ) || 200;
   const arrowDamping = parseFloat(
     customTokens?.ACCORDION_ARROW_DAMPING || tokens.ACCORDION_ARROW_DAMPING
-  );
+  ) || 20;
   const arrowMass = parseFloat(
     customTokens?.ACCORDION_ARROW_MASS || tokens.ACCORDION_ARROW_MASS
-  );
+  ) || 1;
 
   // Content animation tokens - base values
   const baseContentDamping = parseFloat(
     customTokens?.ACCORDION_CONTENT_DAMPING || tokens.ACCORDION_CONTENT_DAMPING
-  );
+  ) || 15;
   const contentStiffness = parseFloat(
     customTokens?.ACCORDION_CONTENT_STIFFNESS || tokens.ACCORDION_CONTENT_STIFFNESS
-  );
+  ) || 100;
   const contentMass = parseFloat(
     customTokens?.ACCORDION_CONTENT_MASS || tokens.ACCORDION_CONTENT_MASS
-  );
+  ) || 1;
 
   // Create hidden content for measurement on first render
   useEffect(() => {
@@ -124,7 +127,7 @@ const Component = ({
           ease: 'easeInOut',
         },
         opacity: {
-          duration: 0.15,
+          duration: textHidingDurationSec || 0.2,
           ease: 'easeInOut',
         },
       },
@@ -136,9 +139,9 @@ const Component = ({
         height: {
           // Spring on open
           type: 'spring',
-          stiffness: contentStiffness,
-          damping: contentDamping,
-          mass: contentMass,
+          stiffness: contentStiffness || 100,
+          damping: contentDamping || 20,
+          mass: contentMass || 1,
         },
         opacity: {
           duration: 0.15,
@@ -161,7 +164,7 @@ const Component = ({
 
   // If we're using our own animation config utility, get the animation configuration
   // This is an alternative way to get the same values as above
-  const dynamicContentAnimation = getContentAnimationWithHeight(contentHeight);
+  const dynamicContentAnimation = getContentAnimationWithHeight ? getContentAnimationWithHeight(contentHeight) : {};
   
   console.log('Dynamic content animation:', dynamicContentAnimation);
 
@@ -181,8 +184,9 @@ const Component = ({
     setIsOpen((prev) => !prev);
     startAnimation();
 
-    // Lock the toggle just for the base animation duration
-    setTimeout(() => setIsToggleDisabled(false), numericMs);
+    // Lock the toggle for the animation duration (ensure it's a valid number)
+    const lockDuration = numericMs > 0 ? numericMs : 300; // Fallback to 300ms if value is invalid
+    setTimeout(() => setIsToggleDisabled(false), lockDuration);
   };
 
   return (
