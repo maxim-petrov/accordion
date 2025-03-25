@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAccordionAnimation } from './scripts/animation.js';
+import { useAccordionAnimation, getContentAnimationWithHeight } from './scripts/animation.js';
 import { extractMs } from './scripts/utils.js';
 import tokens from './tokens/utils/tokenUtils';
 import { useTokens } from './context/TokenContext';
@@ -14,6 +14,9 @@ const Component = ({
   content = <p>Документ, подтверждающий право собственности на квартиру.</p>,
 }) => {
   const { tokenValues: customTokens } = useTokens();
+  const contentRef = useRef(null);
+  const hiddenContentRef = useRef(null);
+  const [contentHeight, setContentHeight] = useState(0);
 
   // Duration from tokens or fallback
   const defaultDuration = customTokens?.ACCORDION_TRANSITION_DURATION || tokens.ACCORDION_TRANSITION_DURATION;
@@ -42,16 +45,57 @@ const Component = ({
     customTokens?.ACCORDION_ARROW_MASS || tokens.ACCORDION_ARROW_MASS
   );
 
-  // Content animation tokens
+  // Content animation tokens - base values
+  const baseContentDamping = parseFloat(
+    customTokens?.ACCORDION_CONTENT_DAMPING || tokens.ACCORDION_CONTENT_DAMPING
+  );
   const contentStiffness = parseFloat(
     customTokens?.ACCORDION_CONTENT_STIFFNESS || tokens.ACCORDION_CONTENT_STIFFNESS
-  );
-  const contentDamping = parseFloat(
-    customTokens?.ACCORDION_CONTENT_DAMPING || tokens.ACCORDION_CONTENT_DAMPING
   );
   const contentMass = parseFloat(
     customTokens?.ACCORDION_CONTENT_MASS || tokens.ACCORDION_CONTENT_MASS
   );
+
+  // Create hidden content for measurement on first render
+  useEffect(() => {
+    if (!contentHeight && hiddenContentRef.current) {
+      const height = hiddenContentRef.current.scrollHeight;
+      if (height > 0) {
+        setContentHeight(height);
+      }
+    }
+  }, [contentHeight]);
+
+  // Update height measurement when accordion is opened
+  useEffect(() => {
+    if (isOpen && contentRef.current) {
+      requestAnimationFrame(() => {
+        const height = contentRef.current.scrollHeight;
+        setContentHeight(height);
+      });
+    }
+  }, [isOpen, content]);
+
+  const calculateDynamicDamping = (height) => {
+    const minDamping = baseContentDamping;
+    
+    const minHeight = 100;
+    const maxHeight = 800;
+    
+    const maxDampingMultiplier = 1.2;
+    
+    if (height <= minHeight) {
+      return minDamping;
+    } else if (height >= maxHeight) {
+      return minDamping * maxDampingMultiplier;
+    } else {
+      const heightRatio = (height - minHeight) / (maxHeight - minHeight);
+      const dampingMultiplier = 1 + (heightRatio * (maxDampingMultiplier - 1));
+      return minDamping * dampingMultiplier;
+    }
+  };
+
+  const contentDamping = calculateDynamicDamping(contentHeight);
 
   console.log('Arrow animation:', { 
     preset: arrowPreset,
@@ -59,7 +103,12 @@ const Component = ({
   });
   console.log('Content animation:', { 
     preset: contentPreset,
-    values: { stiffness: contentStiffness, damping: contentDamping, mass: contentMass }
+    values: { 
+      stiffness: contentStiffness, 
+      damping: contentDamping, 
+      mass: contentMass,
+      contentHeight 
+    }
   });
 
   // --- Variants approach ---
@@ -110,10 +159,24 @@ const Component = ({
     mass: arrowMass,
   };
 
+  // If we're using our own animation config utility, get the animation configuration
+  // This is an alternative way to get the same values as above
+  const dynamicContentAnimation = getContentAnimationWithHeight(contentHeight);
+  
+  console.log('Dynamic content animation:', dynamicContentAnimation);
+
   // Toggle function
   const toggleAccordion = () => {
     if (isToggleDisabled) return;
     setIsToggleDisabled(true);
+
+    // If we haven't measured the content height yet, and we're opening
+    if (!isOpen && contentHeight === 0 && hiddenContentRef.current) {
+      const height = hiddenContentRef.current.scrollHeight;
+      if (height > 0) {
+        setContentHeight(height);
+      }
+    }
 
     setIsOpen((prev) => !prev);
     startAnimation();
@@ -125,6 +188,23 @@ const Component = ({
   return (
     <div className="_Gq5_ ql7Up" data-e2e-id="accordion-base">
       <div className="f_vB6">
+        {/* Hidden content for measurement on first render */}
+        <div 
+          ref={hiddenContentRef} 
+          style={{ 
+            position: 'absolute', 
+            visibility: 'hidden', 
+            height: 'auto',
+            width: '100%',
+            overflow: 'hidden',
+            padding: '0 24px 24px',
+            pointerEvents: 'none',
+            zIndex: -1
+          }}
+        >
+          {content}
+        </div>
+
         <div
           className="acr-root-bdf-12-2-0 acr-divider-502-12-2-0"
           data-e2e-id="accordion-default"
@@ -191,7 +271,7 @@ const Component = ({
                 exit="closed"
               >
                 {/* Put padding on an inner wrapper so "height" anim is clean */}
-                <div style={{ padding: '0 24px 24px' }}>
+                <div style={{ padding: '0 24px 24px' }} ref={contentRef}>
                   {content}
                 </div>
               </motion.div>
