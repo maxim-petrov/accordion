@@ -4,6 +4,7 @@ import tokensPlugin from './scripts/viteTokensPlugin.js'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/accordion/',
   plugins: [
     tokensPlugin(),
     react()
