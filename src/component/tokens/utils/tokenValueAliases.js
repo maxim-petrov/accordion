@@ -9,9 +9,11 @@
 // Default value aliases for spring presets
 const defaultValueAliases = {
   // Spring presets
+  "very_fast": "Очень быстрая",      // Very Fast
   "stiff": "Быстрая (резкая)",     // Fast
   "moderate": "Средняя (умеренная)",  // Medium
-  "soft": "Медленная (плавная)"     // Slow
+  "soft": "Медленная (плавная)",     // Slow
+  "very_slow": "Очень медленная"      // Very Slow
 };
 
 // Get stored value aliases from localStorage if available
