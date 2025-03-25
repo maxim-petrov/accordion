@@ -1,5 +1,4 @@
 :root {
-  --accordion-animation-duration: 250ms;
   --accordion-arrow-damping: [object Object];
   --accordion-arrow-mass: [object Object];
   --accordion-arrow-preset: stiff;
@@ -11,7 +10,6 @@
   --accordion-transition-duration: 250ms;
   --accordion-transition-easing: cubic-bezier(.165, .84, .44, 1);
 }
-$ACCORDION_ANIMATION_DURATION: var(--accordion-animation-duration);
 $ACCORDION_ARROW_DAMPING: var(--accordion-arrow-damping);
 $ACCORDION_ARROW_MASS: var(--accordion-arrow-mass);
 $ACCORDION_ARROW_PRESET: var(--accordion-arrow-preset);

@@ -52,7 +52,6 @@ const processedTokens = {
     "damping": 20,
     "mass": 1
   },
-  "ACCORDION_ANIMATION_DURATION": "250ms",
   "ACCORDION_TRANSITION_DURATION": "250ms",
   "ACCORDION_TRANSITION_EASING": "cubic-bezier(.165, .84, .44, 1)"
 };
