@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import rootTokens from '../tokens.json';
 import { useTokens } from './context/TokenContext';
 import { resetAliases } from './tokens/utils/tokenAliases';
+import { getTokenValueAliasOnly, resetValueAliases } from './tokens/utils/tokenValueAliases';
 
 function TokenConfig() {
   const { 
@@ -9,7 +10,10 @@ function TokenConfig() {
     handleTokenChange: onTokenChange,
     tokenAliases,
     handleAliasChange,
-    getAlias
+    getAlias,
+    valueAliases,
+    handleValueAliasChange,
+    getValueAlias
   } = useTokens();
   const [tokenValues, setTokenValues] = useState(initialTokenValues);
   const [isEditingAlias, setIsEditingAlias] = useState({});
@@ -56,9 +60,9 @@ function TokenConfig() {
     }
   }));
 
-  // Create spring preset options
+  // Create spring preset options with aliases
   const springPresets = Object.keys(rootTokens.spring).map(type => ({
-    label: type.charAt(0).toUpperCase() + type.slice(1),  // Capitalize
+    label: getTokenValueAliasOnly(type) || type.charAt(0).toUpperCase() + type.slice(1),  // Use alias or capitalize
     value: type
   }));
 
@@ -181,6 +185,7 @@ function TokenConfig() {
 
   const handleResetAliases = () => {
     resetAliases();
+    resetValueAliases();
     window.location.reload();
   };
 
@@ -248,9 +253,18 @@ function TokenConfig() {
                 <div className="token-controls">
                   <select 
                     id={`token-${tokenName}`}
-                    value={isCustom ? 'custom' : tokenValue}
+                    value={tokenValue}
                     onChange={handleTokenChange(tokenName)}
+                    className="token-select"
                   >
+                    <option value="">Select...</option>
+                    <optgroup label="Presets">
+                      {isPreset && springPresets.map(preset => (
+                        <option key={preset.value} value={preset.value}>
+                          {preset.label}
+                        </option>
+                      ))}
+                    </optgroup>
                     <optgroup label="Из tokens.json">
                       {isEasing && availableMotions.map(option => (
                         <option key={option.value} value={option.value}>
@@ -260,11 +274,6 @@ function TokenConfig() {
                       {isDuration && availableDurations.map(option => (
                         <option key={option.value} value={option.value}>
                           {option.label}
-                        </option>
-                      ))}
-                      {isPreset && springPresets.map(preset => (
-                        <option key={preset.value} value={preset.value}>
-                          {preset.label}
                         </option>
                       ))}
                       {isSpringParam && availableSprings.map(spring => {

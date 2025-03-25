@@ -39,27 +39,25 @@ const processedTokens = {
   "ACCORDION_CONTENT_PRESET": "moderate",
   "ACCORDION_CONTENT_STIFFNESS": {
     "stiffness": 210,
-    "damping": 20,
+    "damping": 24,
     "mass": 1
   },
   "ACCORDION_CONTENT_DAMPING": {
     "stiffness": 210,
-    "damping": 20,
+    "damping": 24,
     "mass": 1
   },
   "ACCORDION_CONTENT_MASS": {
     "stiffness": 210,
-    "damping": 20,
+    "damping": 24,
     "mass": 1
   },
-  "ACCORDION_CONTENT_SHOW_TRANSITION_DURATION": "250ms",
-  "ACCORDION_CONTENT_SHOW_TRANSITION_EASING": "cubic-bezier(.165, .84, .44, 1)",
+  "ACCORDION_TEXT_SHOW_TRANSITION_DURATION": "250ms",
+  "ACCORDION_TEXT_SHOW_TRANSITION_EASING": "cubic-bezier(.165, .84, .44, 1)",
   "ACCORDION_TRANSITION_DURATION": "250ms",
   "ACCORDION_TRANSITION_EASING": "cubic-bezier(.165, .84, .44, 1)",
   "ACCORDION_TEXT_TRANSITION_DURATION": "250ms",
-  "ACCORDION_TEXT_TRANSITION_EASING": "cubic-bezier(.165, .84, .44, 1)",
-  "ACCORDION_TEXT_SHOW_TRANSITION_DURATION": "250ms",
-  "ACCORDION_TEXT_SHOW_TRANSITION_EASING": "cubic-bezier(.165, .84, .44, 1)"
+  "ACCORDION_TEXT_TRANSITION_EASING": "cubic-bezier(.165, .84, .44, 1)"
 };
 
 processedTokens.updateToken = function(tokenName, tokenValue) {

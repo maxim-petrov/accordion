@@ -6,8 +6,6 @@
   --accordion-content-damping: [object Object];
   --accordion-content-mass: [object Object];
   --accordion-content-preset: moderate;
-  --accordion-content-show-transition-duration: 250ms;
-  --accordion-content-show-transition-easing: cubic-bezier(.165, .84, .44, 1);
   --accordion-content-stiffness: [object Object];
   --accordion-text-show-transition-duration: 250ms;
   --accordion-text-show-transition-easing: cubic-bezier(.165, .84, .44, 1);
@@ -23,8 +21,6 @@ $ACCORDION_ARROW_STIFFNESS: var(--accordion-arrow-stiffness);
 $ACCORDION_CONTENT_DAMPING: var(--accordion-content-damping);
 $ACCORDION_CONTENT_MASS: var(--accordion-content-mass);
 $ACCORDION_CONTENT_PRESET: var(--accordion-content-preset);
-$ACCORDION_CONTENT_SHOW_TRANSITION_DURATION: var(--accordion-content-show-transition-duration);
-$ACCORDION_CONTENT_SHOW_TRANSITION_EASING: var(--accordion-content-show-transition-easing);
 $ACCORDION_CONTENT_STIFFNESS: var(--accordion-content-stiffness);
 $ACCORDION_TEXT_SHOW_TRANSITION_DURATION: var(--accordion-text-show-transition-duration);
 $ACCORDION_TEXT_SHOW_TRANSITION_EASING: var(--accordion-text-show-transition-easing);

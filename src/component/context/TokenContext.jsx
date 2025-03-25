@@ -1,6 +1,7 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import { initializeTokenValues } from '../utils/tokenInitializer';
 import { getTokenAlias, setTokenAlias, getAllAliases } from '../tokens/utils/tokenAliases';
+import { getTokenValueAlias, setTokenValueAlias, getAllValueAliases } from '../tokens/utils/tokenValueAliases';
 
 const TokenContext = createContext();
 
@@ -15,6 +16,7 @@ export function useTokens() {
 export function TokenProvider({ children }) {
   const [tokenValues, setTokenValues] = useState(initializeTokenValues);
   const [tokenAliases, setTokenAliases] = useState(getAllAliases());
+  const [valueAliases, setValueAliases] = useState(getAllValueAliases());
 
   useEffect(() => {
     Object.entries(tokenValues).forEach(([key, value]) => {
@@ -46,12 +48,24 @@ export function TokenProvider({ children }) {
     return getTokenAlias(tokenName);
   };
 
+  const handleValueAliasChange = (tokenValue, aliasValue, tokenType = "spring") => {
+    setTokenValueAlias(tokenValue, aliasValue, tokenType);
+    setValueAliases(getAllValueAliases(tokenType));
+  };
+
+  const getValueAlias = (tokenValue, tokenType = "spring") => {
+    return getTokenValueAlias(tokenValue, tokenType);
+  };
+
   const value = {
     tokenValues,
     tokenAliases,
+    valueAliases,
     handleTokenChange,
     handleAliasChange,
-    getAlias
+    handleValueAliasChange,
+    getAlias,
+    getValueAlias
   };
 
   return (

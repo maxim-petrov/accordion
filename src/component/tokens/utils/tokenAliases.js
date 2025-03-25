@@ -23,7 +23,7 @@ const defaultAliases = {
   
   // Animation presets
   "ACCORDION_ARROW_PRESET": "Анимация стрелки",
-  "ACCORDION_CONTENT_PRESET": "Аницация контента",
+  "ACCORDION_CONTENT_PRESET": "Анимация контента",
   
   // Individual spring parameters (hidden from default view)
   "ACCORDION_ARROW_STIFFNESS": "Arrow stiffness",
