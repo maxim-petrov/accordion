@@ -180,10 +180,12 @@ function TokenConfig() {
   };
 
   const handleResetAliases = () => {
-    if (window.confirm("Are you sure you want to reset all aliases to their default values?")) {
-      resetAliases();
-      window.location.reload(); // Reload to update the UI with reset aliases
-    }
+    resetAliases();
+    window.location.reload();
+  };
+
+  const handleSourceClick = () => {
+    window.open('https://stackblitz.com/~/github.com/maxim-petrov/accordion', '_blank');
   };
 
   const allTokens = Object.entries(tokenValues);
@@ -195,9 +197,16 @@ function TokenConfig() {
         <button 
           className="reset-aliases-button" 
           onClick={handleResetAliases}
-          title="Reset all aliases to default values"
+          title="Сбросить все алиасы до значений по умолчанию"
         >
           Reset
+        </button>
+        <button 
+          className="reset-aliases-button" 
+          onClick={handleSourceClick}
+          title="Исходные значения"
+        >
+          Source
         </button>
       </div>
       
