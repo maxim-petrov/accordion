@@ -36,6 +36,10 @@ const Component = ({
   const textShowDurationMS = extractMs(customTokens?.ACCORDION_TEXT_SHOW_TRANSITION_DURATION || tokens.ACCORDION_TEXT_SHOW_TRANSITION_DURATION);
   const textShowDurationSec = textShowDurationMS / 1000 || 0.2; // Add fallback value
 
+
+  const contentShowDurationMS = extractMs(customTokens?.ACCORDION_CONTENT_SHOW_TRANSITION_DURATION || tokens.ACCORDION_CONTENT_SHOW_TRANSITION_DURATION);
+  const contentShowDurationSec = contentShowDurationMS / 1000 || 0.2; // Add fallback value 
+
   // Animation presets
   const arrowPreset = customTokens?.ACCORDION_ARROW_PRESET || tokens.ACCORDION_ARROW_PRESET || 'stiff';
   const contentPreset = customTokens?.ACCORDION_CONTENT_PRESET || tokens.ACCORDION_CONTENT_PRESET || 'moderate';
@@ -141,6 +145,7 @@ const Component = ({
       transition: {
         height: {
           type: 'spring',
+          duration: 20,
           stiffness: contentStiffness || 100,
           damping: contentDamping || 20,
           mass: contentMass || 1,
