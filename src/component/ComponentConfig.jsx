@@ -30,6 +30,23 @@ function TokenConfig() {
     value: value
   }));
 
+  // Create spring options for stiffness, damping, and mass
+  const availableSprings = Object.entries(rootTokens.spring).map(([type, values]) => ({
+    type,
+    stiffness: {
+      label: `${type} spring (${values.stiffness})`,
+      value: values.stiffness.toString()
+    },
+    damping: {
+      label: `${type} spring (${values.damping})`,
+      value: values.damping.toString()
+    },
+    mass: {
+      label: `${type} spring (${values.mass})`,
+      value: values.mass.toString()
+    }
+  }));
+
   const handleTokenChange = (tokenName) => (e) => {
     let newValue = e.target.value;
     
@@ -119,6 +136,10 @@ function TokenConfig() {
           {allTokens.map(([tokenName, tokenValue]) => {
             const isEasing = tokenName.includes('EASING') || tokenName.includes('MOTION');
             const isDuration = tokenName.includes('DURATION');
+            const isStiffness = tokenName.includes('STIFFNESS');
+            const isDamping = tokenName.includes('DAMPING');
+            const isMass = tokenName.includes('MASS');
+            const isSpringParam = isStiffness || isDamping || isMass;
             const displayName = getAlias(tokenName);
             const isCustom = customSelections[tokenName];
             
@@ -157,6 +178,21 @@ function TokenConfig() {
                       {isDuration && availableDurations.map(option => (
                         <option key={option.value} value={option.value}>
                           {option.label}
+                        </option>
+                      ))}
+                      {isStiffness && availableSprings.map(spring => (
+                        <option key={spring.type + '-stiffness'} value={spring.stiffness.value}>
+                          {spring.stiffness.label}
+                        </option>
+                      ))}
+                      {isDamping && availableSprings.map(spring => (
+                        <option key={spring.type + '-damping'} value={spring.damping.value}>
+                          {spring.damping.label}
+                        </option>
+                      ))}
+                      {isMass && availableSprings.map(spring => (
+                        <option key={spring.type + '-mass'} value={spring.mass.value}>
+                          {spring.mass.label}
                         </option>
                       ))}
                     </optgroup>

@@ -38,6 +38,8 @@ const Component = ({
     customTokens?.ACCORDION_ARROW_MASS || tokens.ACCORDION_ARROW_MASS
   );
 
+  console.log('Spring values:', { stiffness, damping, mass });
+
   // --- Variants approach ---
   // The big trick is "open" vs. "closed" states, each with its own transitions.
   const contentVariants = {
