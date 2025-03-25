@@ -35,6 +35,21 @@ const processedTokens = {
     "damping": 22.22,
     "mass": 1
   },
+  "ACCORDION_CONTENT_STIFFNESS": {
+    "stiffness": 210,
+    "damping": 20,
+    "mass": 1
+  },
+  "ACCORDION_CONTENT_DAMPING": {
+    "stiffness": 210,
+    "damping": 20,
+    "mass": 1
+  },
+  "ACCORDION_CONTENT_MASS": {
+    "stiffness": 210,
+    "damping": 20,
+    "mass": 1
+  },
   "ACCORDION_ANIMATION_DURATION": "250ms",
   "ACCORDION_TRANSITION_DURATION": "250ms",
   "ACCORDION_TRANSITION_EASING": "cubic-bezier(.165, .84, .44, 1)"

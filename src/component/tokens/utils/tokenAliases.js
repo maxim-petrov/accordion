@@ -24,7 +24,12 @@ const defaultAliases = {
   // Arrow animation
   "ACCORDION_ARROW_STIFFNESS": "Arrow bounce stiffness",
   "ACCORDION_ARROW_DAMPING": "Arrow bounce damping",
-  "ACCORDION_ARROW_MASS": "Arrow weight"
+  "ACCORDION_ARROW_MASS": "Arrow weight",
+  
+  // Content animation
+  "ACCORDION_CONTENT_STIFFNESS": "Content bounce stiffness",
+  "ACCORDION_CONTENT_DAMPING": "Content bounce damping",
+  "ACCORDION_CONTENT_MASS": "Content weight"
 };
 
 // Get stored aliases from localStorage if available

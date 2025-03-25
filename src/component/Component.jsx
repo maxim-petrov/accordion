@@ -27,18 +27,30 @@ const Component = ({
   const numericMs = extractMs(defaultDuration);
   const durationSec = numericMs / 1000;
 
-  // Anim tokens
-  const stiffness = parseFloat(
+  // Arrow animation tokens
+  const arrowStiffness = parseFloat(
     customTokens?.ACCORDION_ARROW_STIFFNESS || tokens.ACCORDION_ARROW_STIFFNESS
   );
-  const damping = parseFloat(
+  const arrowDamping = parseFloat(
     customTokens?.ACCORDION_ARROW_DAMPING || tokens.ACCORDION_ARROW_DAMPING
   );
-  const mass = parseFloat(
+  const arrowMass = parseFloat(
     customTokens?.ACCORDION_ARROW_MASS || tokens.ACCORDION_ARROW_MASS
   );
 
-  console.log('Spring values:', { stiffness, damping, mass });
+  // Content animation tokens
+  const contentStiffness = parseFloat(
+    customTokens?.ACCORDION_CONTENT_STIFFNESS || tokens.ACCORDION_CONTENT_STIFFNESS
+  );
+  const contentDamping = parseFloat(
+    customTokens?.ACCORDION_CONTENT_DAMPING || tokens.ACCORDION_CONTENT_DAMPING
+  );
+  const contentMass = parseFloat(
+    customTokens?.ACCORDION_CONTENT_MASS || tokens.ACCORDION_CONTENT_MASS
+  );
+
+  console.log('Arrow spring values:', { stiffness: arrowStiffness, damping: arrowDamping, mass: arrowMass });
+  console.log('Content spring values:', { stiffness: contentStiffness, damping: contentDamping, mass: contentMass });
 
   // --- Variants approach ---
   // The big trick is "open" vs. "closed" states, each with its own transitions.
@@ -65,9 +77,9 @@ const Component = ({
         height: {
           // Spring on open
           type: 'spring',
-          stiffness,
-          damping,
-          mass,
+          stiffness: contentStiffness,
+          damping: contentDamping,
+          mass: contentMass,
         },
         opacity: {
           duration: 0.15,
@@ -83,9 +95,9 @@ const Component = ({
   };
   const arrowTransition = {
     type: 'spring',
-    stiffness,
-    damping,
-    mass,
+    stiffness: arrowStiffness,
+    damping: arrowDamping,
+    mass: arrowMass,
   };
 
   // Toggle function
