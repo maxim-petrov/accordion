@@ -1,8 +1,8 @@
 :root {
   --accordion-animation-duration: 250ms;
-  --accordion-arrow-damping: 22.22;
-  --accordion-arrow-mass: 1;
-  --accordion-arrow-stiffness: 290;
+  --accordion-arrow-damping: [object Object];
+  --accordion-arrow-mass: [object Object];
+  --accordion-arrow-stiffness: [object Object];
   --accordion-transition-duration: 250ms;
   --accordion-transition-easing: cubic-bezier(.165, .84, .44, 1);
 }

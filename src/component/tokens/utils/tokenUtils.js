@@ -20,9 +20,21 @@ const parseTokenValue = (value) => {
 };
 
 const processedTokens = {
-  "ACCORDION_ARROW_STIFFNESS": "290",
-  "ACCORDION_ARROW_DAMPING": "22.22",
-  "ACCORDION_ARROW_MASS": "1",
+  "ACCORDION_ARROW_STIFFNESS": {
+    "stiffness": 290,
+    "damping": 22.22,
+    "mass": 1
+  },
+  "ACCORDION_ARROW_DAMPING": {
+    "stiffness": 290,
+    "damping": 22.22,
+    "mass": 1
+  },
+  "ACCORDION_ARROW_MASS": {
+    "stiffness": 290,
+    "damping": 22.22,
+    "mass": 1
+  },
   "ACCORDION_ANIMATION_DURATION": "250ms",
   "ACCORDION_TRANSITION_DURATION": "250ms",
   "ACCORDION_TRANSITION_EASING": "cubic-bezier(.165, .84, .44, 1)"

@@ -20,7 +20,7 @@ const Component = ({
   const [isOpen, setIsOpen] = useState(false);
   const [isToggleDisabled, setIsToggleDisabled] = useState(false);
 
-  // If you have your own “useAccordionAnimation”, that’s fine:
+  // If you have your own "useAccordionAnimation", that's fine:
   const [, startAnimation] = useAccordionAnimation(null, defaultDuration);
 
   // Convert durations from ms → s for Framer Motion
@@ -39,7 +39,7 @@ const Component = ({
   );
 
   // --- Variants approach ---
-  // The big trick is “open” vs. “closed” states, each with its own transitions.
+  // The big trick is "open" vs. "closed" states, each with its own transitions.
   const contentVariants = {
     closed: {
       height: 0,
