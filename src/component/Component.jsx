@@ -82,7 +82,7 @@ const Component = ({
     const minHeight = 100;
     const maxHeight = 800;
     
-    const maxDampingMultiplier = 1.2;
+    const maxDampingMultiplier = 1.25;
     
     if (height <= minHeight) {
       return minDamping;
