@@ -1,17 +1,17 @@
 :root {
   --accordion-arrow-damping: [object Object];
   --accordion-arrow-mass: [object Object];
-  --accordion-arrow-preset: stiff;
+  --accordion-arrow-preset: moderate;
   --accordion-arrow-stiffness: [object Object];
   --accordion-content-damping: [object Object];
   --accordion-content-mass: [object Object];
-  --accordion-content-preset: stiff;
+  --accordion-content-preset: moderate;
   --accordion-content-stiffness: [object Object];
-  --accordion-text-show-transition-duration: 250ms;
+  --accordion-text-show-transition-duration: 300ms;
   --accordion-text-show-transition-easing: cubic-bezier(.165, .84, .44, 1);
-  --accordion-text-transition-duration: 250ms;
+  --accordion-text-transition-duration: 300ms;
   --accordion-text-transition-easing: cubic-bezier(.165, .84, .44, 1);
-  --accordion-transition-duration: 250ms;
+  --accordion-transition-duration: 300ms;
   --accordion-transition-easing: cubic-bezier(.165, .84, .44, 1);
 }
 $ACCORDION_ARROW_DAMPING: var(--accordion-arrow-damping);

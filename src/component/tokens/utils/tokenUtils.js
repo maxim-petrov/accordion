@@ -20,43 +20,43 @@ const parseTokenValue = (value) => {
 };
 
 const processedTokens = {
-  "ACCORDION_ARROW_PRESET": "stiff",
+  "ACCORDION_ARROW_PRESET": "moderate",
   "ACCORDION_ARROW_STIFFNESS": {
-    "stiffness": 290,
-    "damping": 22.22,
+    "stiffness": 200,
+    "damping": 20,
     "mass": 1
   },
   "ACCORDION_ARROW_DAMPING": {
-    "stiffness": 290,
-    "damping": 22.22,
+    "stiffness": 200,
+    "damping": 20,
     "mass": 1
   },
   "ACCORDION_ARROW_MASS": {
-    "stiffness": 290,
-    "damping": 22.22,
+    "stiffness": 200,
+    "damping": 20,
     "mass": 1
   },
-  "ACCORDION_CONTENT_PRESET": "stiff",
+  "ACCORDION_CONTENT_PRESET": "moderate",
   "ACCORDION_CONTENT_STIFFNESS": {
-    "stiffness": 290,
-    "damping": 22.22,
+    "stiffness": 200,
+    "damping": 20,
     "mass": 1
   },
   "ACCORDION_CONTENT_DAMPING": {
-    "stiffness": 290,
-    "damping": 22.22,
+    "stiffness": 200,
+    "damping": 20,
     "mass": 1
   },
   "ACCORDION_CONTENT_MASS": {
-    "stiffness": 290,
-    "damping": 22.22,
+    "stiffness": 200,
+    "damping": 20,
     "mass": 1
   },
-  "ACCORDION_TEXT_SHOW_TRANSITION_DURATION": "250ms",
+  "ACCORDION_TEXT_SHOW_TRANSITION_DURATION": "300ms",
   "ACCORDION_TEXT_SHOW_TRANSITION_EASING": "cubic-bezier(.165, .84, .44, 1)",
-  "ACCORDION_TRANSITION_DURATION": "250ms",
+  "ACCORDION_TRANSITION_DURATION": "300ms",
   "ACCORDION_TRANSITION_EASING": "cubic-bezier(.165, .84, .44, 1)",
-  "ACCORDION_TEXT_TRANSITION_DURATION": "250ms",
+  "ACCORDION_TEXT_TRANSITION_DURATION": "300ms",
   "ACCORDION_TEXT_TRANSITION_EASING": "cubic-bezier(.165, .84, .44, 1)"
 };
 
