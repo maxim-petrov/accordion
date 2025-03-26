@@ -50,7 +50,6 @@ export const getArrowAnimationConfig = (tokenValues) => ({
   }
 });
 
-// Export the calculateDynamicDamping function for reuse
 export const calculateDynamicDamping = (height, baseDamping, maxDampingMultiplier) => {
   const minHeight = 100;
   const maxHeight = 800;
