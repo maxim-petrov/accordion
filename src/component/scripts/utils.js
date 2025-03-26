@@ -20,6 +20,5 @@ export const extractMs = (duration) => {
     return parseInt(duration);
   }
   
-  console.warn(`Couldn't parse duration: ${duration}, using default value`);
   return 500;
 }; 

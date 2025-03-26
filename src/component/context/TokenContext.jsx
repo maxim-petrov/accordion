@@ -8,7 +8,7 @@ const TokenContext = createContext();
 export function useTokens() {
   const context = useContext(TokenContext);
   if (!context) {
-    throw new Error('useTokens must be used within a TokenProvider');
+    throw new Error('useTokens должен использоваться внутри TokenProvider');
   }
   return context;
 }
@@ -30,7 +30,7 @@ export function TokenProvider({ children }) {
           }
         });
       } catch (error) {
-        console.error('Failed to update token in JS:', error);
+        console.error('Не удалось обновить токен в JavaScript:', error);
       }
     });
   }, [tokenValues]);
