@@ -41,36 +41,34 @@ export const getAccordionTransitionConfig = (tokens) => ({
   ease: tokens.ACCORDION_TRANSITION_EASING
 });
 
-export const getArrowAnimationConfig = (tokens) => ({
+export const getArrowAnimationConfig = (tokenValues) => ({
   transition: {
     type: "spring",
-    stiffness: parseFloat(tokens.ACCORDION_ARROW_STIFFNESS),
-    damping: parseFloat(tokens.ACCORDION_ARROW_DAMPING),
-    mass: parseFloat(tokens.ACCORDION_ARROW_MASS)
+    stiffness: parseFloat(tokenValues.ACCORDION_ARROW_STIFFNESS),
+    damping: parseFloat(tokenValues.ACCORDION_ARROW_DAMPING),
+    mass: parseFloat(tokenValues.ACCORDION_ARROW_MASS)
   }
 });
 
-export const getContentAnimationConfig = (tokens, contentHeight = 0) => {
-  const baseDamping = parseFloat(tokens.ACCORDION_CONTENT_DAMPING);
+// Export the calculateDynamicDamping function for reuse
+export const calculateDynamicDamping = (height, baseDamping, maxDampingMultiplier = 2.5) => {
+  const minHeight = 100;
+  const maxHeight = 800;
   
-  const calculateDynamicDamping = (height) => {
-    const minHeight = 100;
-    const maxHeight = 800;
-    
-    const maxDampingMultiplier = 2.5;
-    
-    if (height <= minHeight) {
-      return baseDamping;
-    } else if (height >= maxHeight) {
-      return baseDamping * maxDampingMultiplier;
-    } else {
-      const heightRatio = (height - minHeight) / (maxHeight - minHeight);
-      const dampingMultiplier = 1 + (heightRatio * (maxDampingMultiplier - 1));
-      return baseDamping * dampingMultiplier;
-    }
-  };
-  
-  const dynamicDamping = calculateDynamicDamping(contentHeight);
+  if (height <= minHeight) {
+    return baseDamping;
+  } else if (height >= maxHeight) {
+    return baseDamping * maxDampingMultiplier;
+  } else {
+    const heightRatio = (height - minHeight) / (maxHeight - minHeight);
+    const dampingMultiplier = 1 + (heightRatio * (maxDampingMultiplier - 1));
+    return baseDamping * dampingMultiplier;
+  }
+};
+
+export const getContentAnimationConfig = (tokenValues, contentHeight = 0) => {
+  const baseDamping = parseFloat(tokenValues.ACCORDION_CONTENT_DAMPING);
+  const dynamicDamping = calculateDynamicDamping(contentHeight, baseDamping);
   
   return {
     initial: { height: 0, opacity: 0 },
@@ -79,13 +77,13 @@ export const getContentAnimationConfig = (tokens, contentHeight = 0) => {
     transition: {
       height: {
         type: "spring",
-        stiffness: parseFloat(tokens.ACCORDION_CONTENT_STIFFNESS),
+        stiffness: parseFloat(tokenValues.ACCORDION_CONTENT_STIFFNESS),
         damping: dynamicDamping,
-        mass: parseFloat(tokens.ACCORDION_CONTENT_MASS),
+        mass: parseFloat(tokenValues.ACCORDION_CONTENT_MASS),
       },
       opacity: {
-        duration: extractMs(tokens.ACCORDION_CONTENT_OPACITY_DURATION) / 1000,
-        ease: tokens.ACCORDION_CONTENT_OPACITY_EASING
+        duration: extractMs(tokenValues.ACCORDION_CONTENT_OPACITY_DURATION) / 1000,
+        ease: tokenValues.ACCORDION_CONTENT_OPACITY_EASING
       }
     },
     style: { overflow: "hidden" }
@@ -98,4 +96,7 @@ export const accordionAnimationConfig = getAccordionTransitionConfig(staticToken
 export const arrowAnimation = getArrowAnimationConfig(staticTokens);
 export const contentAnimation = getContentAnimationConfig(staticTokens, 0);
 
-export const getContentAnimationWithHeight = (height) => getContentAnimationConfig(staticTokens, height);
+export const getContentAnimationWithHeight = (height, customTokenValues = null) => {
+  const tokenValues = customTokenValues || staticTokens;
+  return getContentAnimationConfig(tokenValues, height);
+};

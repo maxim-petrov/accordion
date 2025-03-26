@@ -1,6 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAccordionAnimation, getContentAnimationWithHeight } from './scripts/animation.js';
+import { 
+  useAccordionAnimation, 
+  getContentAnimationWithHeight, 
+  getArrowAnimationConfig,
+  calculateDynamicDamping 
+} from './scripts/animation.js';
 import { extractMs } from './scripts/utils.js';
 import tokens from './tokens/utils/tokenUtils';
 import { useTokens } from './context/TokenContext';
@@ -32,7 +37,6 @@ const Component = ({
 
   const textShowDurationMS = extractMs(customTokens?.ACCORDION_TEXT_SHOW_TRANSITION_DURATION || tokens.ACCORDION_TEXT_SHOW_TRANSITION_DURATION);
   const textShowDurationSec = textShowDurationMS / 1000 || 0.2;
-
 
   const contentShowDurationMS = extractMs(customTokens?.ACCORDION_CONTENT_SHOW_TRANSITION_DURATION || tokens.ACCORDION_CONTENT_SHOW_TRANSITION_DURATION);
   const contentShowDurationSec = contentShowDurationMS / 1000 || 0.2;
@@ -78,26 +82,7 @@ const Component = ({
     }
   }, [isOpen, content]);
 
-  const calculateDynamicDamping = (height) => {
-    const minDamping = baseContentDamping;
-    
-    const minHeight = 100;
-    const maxHeight = 800;
-    
-    const maxDampingMultiplier = 1.25;
-    
-    if (height <= minHeight) {
-      return minDamping;
-    } else if (height >= maxHeight) {
-      return minDamping * maxDampingMultiplier;
-    } else {
-      const heightRatio = (height - minHeight) / (maxHeight - minHeight);
-      const dampingMultiplier = 1 + (heightRatio * (maxDampingMultiplier - 1));
-      return minDamping * dampingMultiplier;
-    }
-  };
-
-  const contentDamping = calculateDynamicDamping(contentHeight);
+  const contentDamping = calculateDynamicDamping(contentHeight, baseContentDamping, 1.25);
 
   console.log('Arrow animation:', { 
     preset: arrowPreset,
@@ -152,14 +137,24 @@ const Component = ({
     closed: { rotate: 0 },
     open: { rotate: 180 },
   };
-  const arrowTransition = {
-    type: 'spring',
-    stiffness: arrowStiffness,
-    damping: arrowDamping,
-    mass: arrowMass,
-  };
+  
+  const arrowTransition = getArrowAnimationConfig({
+    ACCORDION_ARROW_STIFFNESS: arrowStiffness,
+    ACCORDION_ARROW_DAMPING: arrowDamping,
+    ACCORDION_ARROW_MASS: arrowMass
+  }).transition;
 
-  const dynamicContentAnimation = getContentAnimationWithHeight ? getContentAnimationWithHeight(contentHeight) : {};
+  const mergedTokens = {
+    ...tokens,
+    ...(customTokens || {}),
+    ACCORDION_CONTENT_STIFFNESS: contentStiffness,
+    ACCORDION_CONTENT_DAMPING: baseContentDamping,
+    ACCORDION_CONTENT_MASS: contentMass,
+    ACCORDION_CONTENT_OPACITY_DURATION: textShowDurationMS,
+    ACCORDION_CONTENT_OPACITY_EASING: 'easeOut'
+  };
+  
+  const dynamicContentAnimation = getContentAnimationWithHeight(contentHeight, mergedTokens);
   
   console.log('Dynamic content animation:', dynamicContentAnimation);
 
