@@ -177,7 +177,7 @@ const Component = ({
     setIsOpen((prev) => !prev);
     startAnimation();
 
-    const lockDuration = numericMs > 0 ? numericMs : 300; // Fallback to 300ms if value is invalid
+    const lockDuration = numericMs > 0 ? numericMs : 300;
     setTimeout(() => setIsToggleDisabled(false), lockDuration);
   };
 
