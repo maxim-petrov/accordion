@@ -51,16 +51,12 @@ export const getArrowAnimationConfig = (tokens) => ({
 });
 
 export const getContentAnimationConfig = (tokens, contentHeight = 0) => {
-  // Get base damping value
   const baseDamping = parseFloat(tokens.ACCORDION_CONTENT_DAMPING);
   
-  // Calculate dynamic damping based on content height
   const calculateDynamicDamping = (height) => {
-    // Define thresholds for scaling damping
-    const minHeight = 100; // px - below this we use base damping
-    const maxHeight = 800; // px - above this we cap the damping increase
+    const minHeight = 100;
+    const maxHeight = 800;
     
-    // Maximum damping multiplier
     const maxDampingMultiplier = 2.5;
     
     if (height <= minHeight) {
@@ -68,14 +64,12 @@ export const getContentAnimationConfig = (tokens, contentHeight = 0) => {
     } else if (height >= maxHeight) {
       return baseDamping * maxDampingMultiplier;
     } else {
-      // Linear interpolation between min and max
       const heightRatio = (height - minHeight) / (maxHeight - minHeight);
       const dampingMultiplier = 1 + (heightRatio * (maxDampingMultiplier - 1));
       return baseDamping * dampingMultiplier;
     }
   };
   
-  // Calculate dynamic damping value
   const dynamicDamping = calculateDynamicDamping(contentHeight);
   
   return {
@@ -98,13 +92,10 @@ export const getContentAnimationConfig = (tokens, contentHeight = 0) => {
   };
 };
 
-// For creating static exports, get tokens at module load time
 const staticTokens = tokens;
 
-// Export pre-configured animations with current CSS variable values
 export const accordionAnimationConfig = getAccordionTransitionConfig(staticTokens);
 export const arrowAnimation = getArrowAnimationConfig(staticTokens);
 export const contentAnimation = getContentAnimationConfig(staticTokens, 0);
 
-// Helper function to get content animation with a specific height
 export const getContentAnimationWithHeight = (height) => getContentAnimationConfig(staticTokens, height);

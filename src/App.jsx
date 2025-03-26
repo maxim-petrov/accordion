@@ -5,7 +5,6 @@ import ComponentConfig from './component/ComponentConfig.jsx';
 import { TokenProvider } from './component/context/TokenContext';
 
 function App() {
-  // Detailed content for the first accordion
   const detailedContent = (
     <>
       <p>
@@ -33,7 +32,6 @@ function App() {
     </>
   );
 
-  // Shorter content for the second accordion
   const shortContent1 = (
     <p>
       Документ, подтверждающий право собственности на квартиру (договор купли-продажи, 
@@ -42,7 +40,6 @@ function App() {
     </p>
   );
 
-  // Shorter content for the third accordion
   const shortContent2 = (
     <p>
       Документ, на основании которого текущий владелец приобрел право собственности на квартиру. 

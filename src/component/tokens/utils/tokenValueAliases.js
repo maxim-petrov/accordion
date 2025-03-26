@@ -1,14 +1,4 @@
-/**
- * Token Value Aliases
- * 
- * This file contains user-friendly aliases for token values (not token names).
- * For example, spring presets like "stiff", "moderate", "soft" can have
- * more user-friendly or localized display names.
- */
-
-// Default value aliases for spring presets
 const defaultValueAliases = {
-  // Spring presets
   "very_fast": "Очень быстрая",      // Very Fast
   "stiff": "Быстрая (резкая)",     // Fast
   "moderate": "Средняя (умеренная)",  // Medium
@@ -16,7 +6,6 @@ const defaultValueAliases = {
   "very_slow": "Очень медленная"      // Very Slow
 };
 
-// Get stored value aliases from localStorage if available
 const loadStoredValueAliases = () => {
   try {
     const stored = localStorage.getItem('accordion_token_value_aliases');
@@ -27,13 +16,11 @@ const loadStoredValueAliases = () => {
   }
 };
 
-// Merge default aliases with stored aliases
 const tokenValueAliases = {
   ...defaultValueAliases,
   ...loadStoredValueAliases()
 };
 
-// Save value aliases to localStorage
 const saveValueAliases = () => {
   try {
     localStorage.setItem('accordion_token_value_aliases', JSON.stringify(tokenValueAliases));

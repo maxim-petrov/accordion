@@ -18,33 +18,28 @@ const Component = ({
   const hiddenContentRef = useRef(null);
   const [contentHeight, setContentHeight] = useState(0);
 
-  // Duration from tokens or fallback
   const defaultDuration = customTokens?.ACCORDION_TRANSITION_DURATION || tokens.ACCORDION_TRANSITION_DURATION;
   const [isOpen, setIsOpen] = useState(false);
   const [isToggleDisabled, setIsToggleDisabled] = useState(false);
 
-  // If you have your own "useAccordionAnimation", that's fine:
   const [, startAnimation] = useAccordionAnimation(null, defaultDuration) || [null, () => {}];
 
-  // Convert durations from ms → s for Framer Motion
-  const numericMs = extractMs(defaultDuration) || 300; // Default to 300ms if extraction fails
+  const numericMs = extractMs(defaultDuration) || 300;
   const durationSec = numericMs / 1000;
 
   const textHidingDurationMS = extractMs(customTokens?.ACCORDION_TEXT_TRANSITION_DURATION || tokens.ACCORDION_TEXT_TRANSITION_DURATION);
-  const textHidingDurationSec = textHidingDurationMS / 1000 || 0.2; // Add fallback value
+  const textHidingDurationSec = textHidingDurationMS / 1000 || 0.2;
 
   const textShowDurationMS = extractMs(customTokens?.ACCORDION_TEXT_SHOW_TRANSITION_DURATION || tokens.ACCORDION_TEXT_SHOW_TRANSITION_DURATION);
-  const textShowDurationSec = textShowDurationMS / 1000 || 0.2; // Add fallback value
+  const textShowDurationSec = textShowDurationMS / 1000 || 0.2;
 
 
   const contentShowDurationMS = extractMs(customTokens?.ACCORDION_CONTENT_SHOW_TRANSITION_DURATION || tokens.ACCORDION_CONTENT_SHOW_TRANSITION_DURATION);
-  const contentShowDurationSec = contentShowDurationMS / 1000 || 0.2; // Add fallback value 
+  const contentShowDurationSec = contentShowDurationMS / 1000 || 0.2;
 
-  // Animation presets
   const arrowPreset = customTokens?.ACCORDION_ARROW_PRESET || tokens.ACCORDION_ARROW_PRESET || 'stiff';
   const contentPreset = customTokens?.ACCORDION_CONTENT_PRESET || tokens.ACCORDION_CONTENT_PRESET || 'moderate';
 
-  // Arrow animation tokens
   const arrowStiffness = parseFloat(
     customTokens?.ACCORDION_ARROW_STIFFNESS || tokens.ACCORDION_ARROW_STIFFNESS
   ) || 200;
@@ -55,7 +50,6 @@ const Component = ({
     customTokens?.ACCORDION_ARROW_MASS || tokens.ACCORDION_ARROW_MASS
   ) || 1;
 
-  // Content animation tokens - base values
   const baseContentDamping = parseFloat(
     customTokens?.ACCORDION_CONTENT_DAMPING || tokens.ACCORDION_CONTENT_DAMPING
   ) || 15;
@@ -66,7 +60,6 @@ const Component = ({
     customTokens?.ACCORDION_CONTENT_MASS || tokens.ACCORDION_CONTENT_MASS
   ) || 1;
 
-  // Create hidden content for measurement on first render
   useEffect(() => {
     if (!contentHeight && hiddenContentRef.current) {
       const height = hiddenContentRef.current.scrollHeight;
@@ -76,7 +69,6 @@ const Component = ({
     }
   }, [contentHeight]);
 
-  // Update height measurement when accordion is opened
   useEffect(() => {
     if (isOpen && contentRef.current) {
       requestAnimationFrame(() => {
@@ -121,8 +113,6 @@ const Component = ({
     }
   });
 
-  // --- Variants approach ---
-  // The big trick is "open" vs. "closed" states, each with its own transitions.
   const contentVariants = {
     closed: {
       height: 0,
@@ -169,18 +159,14 @@ const Component = ({
     mass: arrowMass,
   };
 
-  // If we're using our own animation config utility, get the animation configuration
-  // This is an alternative way to get the same values as above
   const dynamicContentAnimation = getContentAnimationWithHeight ? getContentAnimationWithHeight(contentHeight) : {};
   
   console.log('Dynamic content animation:', dynamicContentAnimation);
 
-  // Toggle function
   const toggleAccordion = () => {
     if (isToggleDisabled) return;
     setIsToggleDisabled(true);
 
-    // If we haven't measured the content height yet, and we're opening
     if (!isOpen && contentHeight === 0 && hiddenContentRef.current) {
       const height = hiddenContentRef.current.scrollHeight;
       if (height > 0) {
@@ -191,7 +177,6 @@ const Component = ({
     setIsOpen((prev) => !prev);
     startAnimation();
 
-    // Lock the toggle for the animation duration (ensure it's a valid number)
     const lockDuration = numericMs > 0 ? numericMs : 300; // Fallback to 300ms if value is invalid
     setTimeout(() => setIsToggleDisabled(false), lockDuration);
   };
@@ -199,7 +184,6 @@ const Component = ({
   return (
     <div className="_Gq5_ ql7Up" data-e2e-id="accordion-base">
       <div className="f_vB6">
-        {/* Hidden content for measurement on first render */}
         <div 
           ref={hiddenContentRef} 
           style={{ 
@@ -222,7 +206,6 @@ const Component = ({
           tabIndex="0"
           role="presentation"
         >
-          {/* HEADER / TOGGLE BUTTON */}
           <div
             onClick={toggleAccordion}
             data-e2e-id="accordion-default--toggle-button"
@@ -244,7 +227,6 @@ const Component = ({
                 </div>
               </div>
             </div>
-            {/* Arrow */}
             <div className="acr-arrow-60f-12-2-0">
               <div className="icon-root-864-6-0-3 acr-icon-ea7-12-2-0">
                 <motion.svg
@@ -268,20 +250,16 @@ const Component = ({
             </div>
           </div>
 
-          {/* AnimatePresence for unmounting on close. */}
           <AnimatePresence initial={false}>
             {isOpen && (
               <motion.div
-                // Instead of key="content", let AnimatePresence handle it
                 className="acr-content-c3a-12-2-0"
                 style={{ overflow: 'hidden' }}
-                // We use variants instead of manual initial/animate/exit
                 variants={contentVariants}
                 initial="closed"
                 animate="open"
                 exit="closed"
               >
-                {/* Put padding on an inner wrapper so "height" anim is clean */}
                 <div style={{ padding: '0 24px 24px' }} ref={contentRef}>
                   {content}
                 </div>
